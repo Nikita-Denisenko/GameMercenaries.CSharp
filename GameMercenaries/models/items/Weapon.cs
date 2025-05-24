@@ -11,11 +11,14 @@ public class Weapon(
     string weaponType,
     int[] damageRange,
     int distance,
-    int accuracy
+    int accuracy,
+    Dictionary<string, int> rules
+    
     ) : Item(id, name, itemType, maxQuantity, currentQuantity, weight, info)
 {
     public string WeaponType { get; } = weaponType;
     public int[] DamageRange { get; } = damageRange;
     public int Distance { get; } = distance;
     public int Accuracy { get; } = accuracy;
+    public Dictionary<string, int> Rules { get; } = rules;
 }
