@@ -3,28 +3,28 @@ using GameMercenaries.models;
 using GameMercenaries.models.items;
 using Newtonsoft.Json.Linq;
 
-namespace GameMercenaries.utils;
+namespace GameMercenaries.DataLoading;
 
 public static class Loaders
 {
-    public static List<Location> LoadLocations(string path)
+    public static List<Location> LoadLocations()
     {
-        var json = File.ReadAllText(path);
+        var json = File.ReadAllText("GameMercenaries/data/locations.json");
         var locations = JsonConvert.DeserializeObject<List<Location>>(json) ?? [];
         return locations;
     }
 
-    public static List<Unit> LoadUnits(string path)
+    public static List<Unit> LoadUnits()
     {
-        var json = File.ReadAllText(path);
+        var json = File.ReadAllText("GameMercenaries/data/units.json");
         var units = JsonConvert.DeserializeObject<List<Unit>>(json) ?? [];
         return units;
     }
 
-    public static List<Item> LoadItems(string path)
+    public static List<Item> LoadItems()
     {
         List <Item> resultItems = [];
-        var json = File.ReadAllText(path);
+        var json = File.ReadAllText("GameMercenaries/data/items.json");
         var itemsObj = JObject.Parse(json);
 
         foreach (var property in itemsObj.Properties())
