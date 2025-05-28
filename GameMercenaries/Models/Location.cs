@@ -1,6 +1,3 @@
-using GameMercenaries.models.items;
-using static GameMercenaries.GameLogic.ItemsLogic;
-
 namespace GameMercenaries.models;
 
 public class Location(
@@ -21,7 +18,6 @@ public class Location(
     public Dictionary<string, string[]> Items { get; } = items;
     public Dictionary<string, int> Rules { get; } = rules;
     public List<Player> CurrentPlayers { get; } = [];
-    public List<Item> CurrentItems { get; } = GenerateStartItems();
     
     public void AddPlayer(Player player)
     {
@@ -31,24 +27,5 @@ public class Location(
     public void RemovePlayer(Player player)
     {
         CurrentPlayers.Remove(player);
-    }
-
-    public void AddNewItem()
-    {
-        var item = GenerateItem();
-        if (item != null)
-        {
-            CurrentItems.Add(item);
-        }
-    }
-
-    public void RemoveItem(Item item)
-    {
-        if (!CurrentItems.Contains(item))
-        {
-            Console.WriteLine("В этой локации нет заданного предмета!");
-            return;
-        }
-        CurrentItems.Remove(item);
     }
 }

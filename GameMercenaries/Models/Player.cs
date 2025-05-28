@@ -3,27 +3,51 @@ using GameMercenaries.models.items;
 namespace GameMercenaries.models;
 
 using static GameLogic.LocationsLogic;
+using static Interface.Interface;
+using static GameLogic.ItemsLogic;
+
 
 public class Player(
     string userName,
-    Unit unit,
-    Location startLocation
+    Unit unit
     )
 {
     public string UserName { get; } = userName;
     public Unit Unit { get; } = unit;
-    public Location Location { get; private set; } = startLocation;
-    public List<Item> Inventory { get; private set; } = [];
-    public int InventoryWeight { get; private set; } = 0;
+    public Location Location { get; private set; } = GenerateLocation();
+    public Item ItemOnLocation { get; private set; } = GenerateItem(); // Уникальный для каждого игрока
+    public List<Item> Inventory { get; } = [];
+    public int InventoryWeight { get; private set; }
     public HashSet<Artefact> Artefacts { get; private set; } = [];
 
     public void ChangeLocation()
     {
-        Location = GenerateLocation();
+        Location = GenerateLocation(Location);
+        ItemOnLocation = GenerateItem();
     }
 
     public void TakeItem()
     {
+        if (Unit.Weight < InventoryWeight + ItemOnLocation.Weight)
+        {
+            Console.WriteLine("Недостаточно места в инвентаре для этого предмета!");
+            return;
+        }
         
+        Inventory.Add(ItemOnLocation);
+        InventoryWeight += ItemOnLocation.Weight;
+        Console.WriteLine($"Вы подобрали предмет {ItemOnLocation.Name}");
+    }
+
+    public void RemoveItem()
+    {
+        Console.WriteLine("Ваш инвентарь:");
+        PrintItems(Inventory);
+        Console.WriteLine("Выберите какой предмет вы хотите удалить:");
+        var number = GetNumberOfAction(Inventory.Count);
+        var item = Inventory[number - 1];
+        Inventory.Remove(item);
+        InventoryWeight -= item.Weight;
+        Console.WriteLine($"Вы выбросили предмет {item.Name} из инвентаря");
     }
 }

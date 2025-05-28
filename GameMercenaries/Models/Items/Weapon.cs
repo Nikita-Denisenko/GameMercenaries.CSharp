@@ -4,8 +4,6 @@ public class Weapon(
     string id,
     string name,
     string itemType,
-    int maxQuantity,
-    int currentQuantity,
     int weight,
     string info,
     string weaponType,
@@ -14,7 +12,7 @@ public class Weapon(
     int accuracy,
     Dictionary<string, int> rules
     
-    ) : Item(id, name, itemType, maxQuantity, currentQuantity, weight, info)
+    ) : Item(id, name, itemType, weight, info)
 {
     public string WeaponType { get; } = weaponType;
     public int[] DamageRange { get; } = damageRange;
