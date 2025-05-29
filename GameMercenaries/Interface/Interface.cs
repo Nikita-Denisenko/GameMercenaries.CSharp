@@ -1,3 +1,4 @@
+using GameMercenaries.models;
 using GameMercenaries.models.items;
 
 namespace GameMercenaries.Interface;
@@ -15,6 +16,18 @@ public static class Interface
         }    
     }
 
+    public static void PrintPlayers(List<Player> players)
+    {
+        var currentPlayerNumber = 0;
+        
+        foreach (var player in players)
+        {
+            currentPlayerNumber++;
+            var unit = player.Unit;
+            Console.WriteLine($"{currentPlayerNumber}. {player.UserName} ({unit.Name}) Жизни: {unit.CurrentHealth} из {unit.MaxHealth}");
+        }    
+    }
+    
     public static int GetNumberOfAction(int actionsQuantity)
     {
         while (true)

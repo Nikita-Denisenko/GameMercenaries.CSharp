@@ -14,7 +14,7 @@ public class Player(
 {
     public string UserName { get; } = userName;
     public Unit Unit { get; } = unit;
-    public Location Location { get; private set; } = GenerateLocation();
+    public Location Location { get; private set; } = GenerateStartLocation();
     public Item ItemOnLocation { get; private set; } = GenerateItem(); // Уникальный для каждого игрока
     public List<Item> Inventory { get; } = [];
     public int InventoryWeight { get; private set; }
@@ -22,7 +22,7 @@ public class Player(
 
     public void ChangeLocation()
     {
-        Location = GenerateLocation(Location);
+        Location = GenerateNewLocation(Location);
         ItemOnLocation = GenerateItem();
     }
 
@@ -43,7 +43,7 @@ public class Player(
     {
         Console.WriteLine("Ваш инвентарь:");
         PrintItems(Inventory);
-        Console.WriteLine("Выберите какой предмет вы хотите удалить:");
+        Console.WriteLine("Выберите какой предмет вы хотите выбросать:");
         var number = GetNumberOfAction(Inventory.Count);
         var item = Inventory[number - 1];
         Inventory.Remove(item);

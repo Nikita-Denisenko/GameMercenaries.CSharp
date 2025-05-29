@@ -5,11 +5,11 @@ namespace GameMercenaries.GameLogic;
 
 public static class ItemsLogic
 {
-    private static readonly Random Rnd = new();
+    private static readonly Random Random = new();
 
     public static Item GenerateItem()
     {
         var items = GameData.Items;
-        return items[Rnd.Next(items.Count)];;
+        return items[Random.Next(items.Count)];
     }
 }

@@ -19,4 +19,12 @@ public class Weapon(
     public int Distance { get; } = distance;
     public int Accuracy { get; } = accuracy;
     public Dictionary<string, int> Rules { get; } = rules;
+
+    public int GenerateDamage()
+    {
+        Random random = new();
+        var first = DamageRange[0];
+        var second = DamageRange[1]; 
+        return random.Next(first, second + 1);
+    }
 }
