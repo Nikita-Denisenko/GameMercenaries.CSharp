@@ -1,9 +1,9 @@
 using GameMercenaries.models;
 using GameMercenaries.models.items;
 
-namespace GameMercenaries.Interface;
+namespace GameMercenaries.UserInterface;
 
-public static class Interface
+public static class UserInterface
 {
     public static void PrintItems(List<Item> items)
     {
@@ -53,5 +53,39 @@ public static class Interface
 
             return number;
         }
+    }
+    
+    public static void MoveActionsMenu()
+    {
+        Console.WriteLine("1. Карта");
+        Console.WriteLine("2. Инвентарь");
+        Console.WriteLine("3. Осмотреть локацию");
+        Console.WriteLine("4. Мой юнит");
+        Console.WriteLine("5. События");
+    }
+    
+    public static void MapMenu(Player player)
+    { 
+        return;
+    }
+    
+    public static void InventoryMenu(Player player)
+    { 
+        return;
+    }
+    
+    public static void LocationMenu(Player player)
+    { 
+        return;
+    }
+
+    public static void UnitMenu(Player player)
+    {
+        return;
+    }
+    
+    public static void EventsMenu(Player player)
+    {
+        return;
     }
 }

@@ -3,7 +3,7 @@ using GameMercenaries.models.items;
 namespace GameMercenaries.models;
 
 using static GameLogic.LocationsLogic;
-using static Interface.Interface;
+using static UserInterface.UserInterface;
 using static GameLogic.ItemsLogic;
 
 
