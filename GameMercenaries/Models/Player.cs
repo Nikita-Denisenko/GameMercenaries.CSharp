@@ -4,7 +4,7 @@ namespace GameMercenaries.models;
 
 using static GameLogic.LocationsLogic;
 using static UserInterface.UserInterface;
-using static GameLogic.ItemsLogic;
+using static GameLogic.ItemLogic;
 
 
 public class Player(
@@ -15,7 +15,7 @@ public class Player(
     public string UserName { get; } = userName;
     public Unit Unit { get; } = unit;
     public Location Location { get; private set; } = GenerateStartLocation();
-    public Item ItemOnLocation { get; private set; } = GenerateItem(); // Уникальный для каждого игрока
+    public Item ItemOnLocation { get; private set; } = GenerateStartItem();
     public List<Item> Inventory { get; } = [];
     public int InventoryWeight { get; private set; }
     public HashSet<Artefact> Artefacts { get; private set; } = [];
@@ -23,7 +23,7 @@ public class Player(
     public void ChangeLocation()
     {
         Location = GenerateNewLocation(Location);
-        ItemOnLocation = GenerateItem();
+        ItemOnLocation = GenerateItem(Location);
     }
 
     public void TakeItem()

@@ -6,7 +6,8 @@ public class Location(
     string[] adjacentLocations,
     string[] distantLocations,
     string[] unavailableLocations,
-    Dictionary<string, string[]> items,
+    Dictionary<string, int[]> items,
+    string info,
     Dictionary<string, int> rules
     )
 {
@@ -15,7 +16,8 @@ public class Location(
     public string[] AdjacentLocations { get; } = adjacentLocations;
     public string[] DistantLocations { get; } = distantLocations;
     public string[] UnavailableLocations { get; } = unavailableLocations;
-    public Dictionary<string, string[]> Items { get; } = items;
+    public Dictionary<string, int[]> Items { get; } = items;
+    public string Info { get; } = info;
     public Dictionary<string, int> Rules { get; } = rules;
     public List<Player> CurrentPlayers { get; } = [];
     
