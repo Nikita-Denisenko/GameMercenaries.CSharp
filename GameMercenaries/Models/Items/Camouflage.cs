@@ -1,13 +1,9 @@
-namespace GameMercenaries.models.items;
+using Newtonsoft.Json;
 
-public class Camouflage(
-    string id,
-    string name,
-    string itemType,
-    int weight,
-    string info,
-    int cutEnemyAccuracyBonus
-    ) : Item(id, name, itemType, weight, info)
+namespace GameMercenaries.Models.Items;
+
+public class Camouflage : Item
 {
-    public int CutEnemyAccuracyBonus { get; } = cutEnemyAccuracyBonus;
+    [JsonProperty("cut_enemy_accuracy")]
+    public int CutEnemyAccuracyBonus { get; set; }
 }

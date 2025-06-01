@@ -1,13 +1,11 @@
-namespace GameMercenaries.models.items;
+using Newtonsoft.Json;
 
-public class HealthKit(
-    string id,
-    string name,
-    string itemType,
-    int weight,
-    string info,
-    int hpBonus
-    ) : Item(id, name, itemType, weight, info)
+namespace GameMercenaries.Models.Items;
+
+public class HealthKit : Item
 {
-    public int HpBonus { get; } = hpBonus;
+    [JsonProperty("hp")]
+    public int HpBonus { get; set; }
+
+    public HealthKit() { }
 }

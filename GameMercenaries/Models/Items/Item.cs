@@ -1,16 +1,26 @@
-namespace GameMercenaries.models.items;
+using Newtonsoft.Json;
 
-public abstract class Item(
-    string id,
-    string name,
-    string itemType,
-    int weight,
-    string info)
+namespace GameMercenaries.Models.Items;
+
+public abstract class Item
 {
-    public string Id { get; } = id;
-    public string Name { get; } = name;
-    public string ItemType { get; } = itemType;
-    public int Weight { get; } = weight;
-    
-    public void PrintInfo() => Console.WriteLine(info);
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
+    [JsonProperty("name")]
+    public string Name { get; set; } = string.Empty;
+
+    [JsonProperty("item_type")]
+    public string ItemType { get; set; } = string.Empty;
+
+    [JsonProperty("weight")]
+    public int Weight { get; set; }
+
+    [JsonProperty("info")]
+    public string Info { get; set; } = string.Empty;
+
+    public virtual void PrintInfo()
+    {
+        Console.WriteLine($"{Name} ({ItemType}) — {Info}");
+    }
 }

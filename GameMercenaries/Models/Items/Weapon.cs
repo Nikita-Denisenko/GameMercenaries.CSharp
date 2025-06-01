@@ -1,30 +1,29 @@
-namespace GameMercenaries.models.items;
+using Newtonsoft.Json;
 
-public class Weapon(
-    string id,
-    string name,
-    string itemType,
-    int weight,
-    string info,
-    string weaponType,
-    int[] damageRange,
-    int distance,
-    int accuracy,
-    Dictionary<string, int> rules
-    
-    ) : Item(id, name, itemType, weight, info)
+namespace GameMercenaries.Models.Items;
+
+public class Weapon : Item
 {
-    public string WeaponType { get; } = weaponType;
-    public int[] DamageRange { get; } = damageRange;
-    public int Distance { get; } = distance;
-    public int Accuracy { get; } = accuracy;
-    public Dictionary<string, int> Rules { get; } = rules;
+    [JsonProperty("weapon_type")]
+    public string WeaponType { get; set; } = string.Empty;
+
+    [JsonProperty("damage_range")]
+    public int[] DamageRange { get; set; } = [];
+
+    [JsonProperty("distance")]
+    public int Distance { get; set; }
+
+    [JsonProperty("accuracy")]
+    public int Accuracy { get; set; }
+
+    [JsonProperty("rules")]
+    public Dictionary<string, int> Rules { get; set; } = new();
 
     public int GenerateDamage()
     {
+        if (DamageRange.Length != 2) return 0;
+
         Random random = new();
-        var first = DamageRange[0];
-        var second = DamageRange[1]; 
-        return random.Next(first, second + 1);
+        return random.Next(DamageRange[0], DamageRange[1] + 1);
     }
 }

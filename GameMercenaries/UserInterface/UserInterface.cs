@@ -1,7 +1,7 @@
 using GameMercenaries.Constants;
 using GameMercenaries.gameManagement;
 using GameMercenaries.models;
-using GameMercenaries.models.items;
+using GameMercenaries.Models.Items;
 
 namespace GameMercenaries.UserInterface;
 
@@ -134,7 +134,7 @@ public static class UserInterface
         
         Console.WriteLine("1. Выбросить предмет");
         
-        var hasMedkit = inventory.Any(item => item.Id == ItemIds.Medkit);
+        var hasMedkit = inventory.Any(item => (ItemId)item.Id == ItemId.Medkit);
         
         if (!hasMedkit)
         {

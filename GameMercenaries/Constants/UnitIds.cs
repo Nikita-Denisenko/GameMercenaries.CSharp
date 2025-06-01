@@ -1,13 +1,14 @@
-namespace GameMercenaries.Constants;
-
-public static class UnitIds
+namespace GameMercenaries.Constants
 {
-    public const string Soldier = "1";       
-    public const string Brawler = "2";       
-    public const string TurtleMan = "3";     
-    public const string Gunfighter = "4";   
-    public const string LizardMan = "5";     
-    public const string ChameleonMan = "6";  
-    public const string FastWalker = "7";    
-    public const string CrabMan = "8";       
+    public enum UnitId
+    {
+        Soldier = 1,
+        Brawler,
+        TurtleMan,
+        Gunfighter,
+        LizardMan,
+        ChameleonMan,
+        FastWalker,
+        CrabMan
+    }
 }

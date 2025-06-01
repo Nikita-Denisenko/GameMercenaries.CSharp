@@ -1,13 +1,9 @@
-namespace GameMercenaries.models.items;
+using Newtonsoft.Json;
 
-public class WeaponUpgrade(
-    string id,
-    string name,
-    string itemType,
-    int weight,
-    string info,
-    int accuracyBonus
-) : Item(id, name, itemType, weight, info)
+namespace GameMercenaries.Models.Items;
+
+public class WeaponUpgrade : Item
 {
-    public int AccuracyBonus { get; } = accuracyBonus;
+    [JsonProperty("accuracy_bonus")]
+    public int AccuracyBonus { get; set; }
 }

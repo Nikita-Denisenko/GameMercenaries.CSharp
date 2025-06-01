@@ -1,4 +1,4 @@
-using GameMercenaries.models.items;
+using GameMercenaries.Models.Items;
 
 namespace GameMercenaries.models;
 

@@ -1,5 +1,5 @@
 using GameMercenaries.models;
-using GameMercenaries.models.items;
+using GameMercenaries.Models.Items;
 using static GameMercenaries.DataLoading.Loaders;
 
 namespace GameMercenaries.gameManagement;

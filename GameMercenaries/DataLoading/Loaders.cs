@@ -1,75 +1,55 @@
 using Newtonsoft.Json;
 using GameMercenaries.models;
-using GameMercenaries.models.items;
+using GameMercenaries.Models.Items;
 using Newtonsoft.Json.Linq;
 
 namespace GameMercenaries.DataLoading;
 
 public static class Loaders
 {
+
     public static List<Location> LoadLocations()
     {
-        var json = File.ReadAllText("GameMercenaries/data/locations.json");
-        var locations = JsonConvert.DeserializeObject<List<Location>>(json) ?? [];
-        return locations;
+        var json = File.ReadAllText("GameMercenaries/Data/locations.json");
+        return JsonConvert.DeserializeObject<List<Location>>(json) ?? [];
     }
-
+    
+    
     public static List<Unit> LoadUnits()
     {
         var json = File.ReadAllText("GameMercenaries/data/units.json");
-        var units = JsonConvert.DeserializeObject<List<Unit>>(json) ?? [];
+        var units = JsonConvert.DeserializeObject<List<Unit>>(json) ?? new List<Unit>();
+
         return units;
     }
 
     public static List<Item> LoadItems()
     {
-        List <Item> resultItems = [];
-        var json = File.ReadAllText("GameMercenaries/data/items.json");
-        var itemsObj = JObject.Parse(json);
+        var json = File.ReadAllText("GameMercenaries/Data/items.json");
+        var rawDict = JsonConvert.DeserializeObject<Dictionary<string, JObject>>(json);
+        var items = new List<Item>();
 
-        foreach (var property in itemsObj.Properties())
+        foreach (var (idStr, obj) in rawDict)
         {
-            var id = property.Name;
-            var itemData = property.Value;
-            
-            var name = itemData["name"]?.ToString() ?? "";
-            var itemType = itemData["item_type"]?.ToString() ?? "";
-            var weight = itemData["weight"]?.ToObject<int>() ?? 0;
-            var info = itemData["info"]?.ToString() ?? "";
-            
-            switch (itemType)
+            obj["id"] = int.Parse(idStr); // добавить ID в объект
+
+            var type = obj["item_type"]?.ToString();
+            Item? item = type switch
             {
-                case "Артефакт":
-                    resultItems.Add(new Artefact(id, name, itemType, weight, info));
-                    break;
-                case  "Броня":
-                    var damageReduction = itemData["damage_reduction"]?.ToObject<int>() ?? 0;
-                    resultItems.Add(new Armor(id, name, itemType, weight,  info,  damageReduction));
-                    break;
-                case "Маскировочное снаряжение":
-                    var cutEnemyAccuracy = itemData["cut_enemy_accuracy"]?.ToObject<int>() ?? 0;
-                    resultItems.Add(new Camouflage(id, name, itemType, weight, info, cutEnemyAccuracy));
-                    break;
-                case "Аптечка":
-                    var hpBonus = itemData["hp"]?.ToObject<int>() ?? 0;
-                    resultItems.Add(new HealthKit(id, name, itemType, weight, info, hpBonus));
-                    break;
-                case "Оружие":
-                    var weaponType = itemData["weapon_type"]?.ToString() ?? "";
-                    var damageRange = itemData["damage_range"]?.ToObject<int[]>() ?? [];
-                    var distance = itemData["distance"]?.ToObject<int>() ?? 0;
-                    var accuracy = itemData["accuracy"]?.ToObject<int>() ?? 0;
-                    var rules = itemData["rules"]?.ToObject<Dictionary<string, int>>() ?? new Dictionary<string, int>();
-                    resultItems.Add(new Weapon(id, name, itemType, weight, info, 
-                                    weaponType, damageRange, distance, accuracy, rules));
-                    break;
-                case "Бустер на оружие":
-                    var accuracyBonus = itemData["accuracy_bonus"]?.ToObject<int>() ?? 0;
-                    resultItems.Add(new WeaponUpgrade(id, name, itemType, weight, info, accuracyBonus));
-                    break;
-            }
+                "Оружие" => obj.ToObject<Weapon>(),
+                "Артефакт" => obj.ToObject<Artefact>(),
+                "Броня" => obj.ToObject<Armor>(),
+                "Маскировочное снаряжение" => obj.ToObject<Camouflage>(),
+                "Бустер на оружие" => obj.ToObject<WeaponUpgrade>(),
+                "Медикамент" => obj.ToObject<HealthKit>(),
+                _ => null
+            };
+
+            if (item != null)
+                items.Add(item);
         }
-        return resultItems;
+
+        return items;
     }
 }
     

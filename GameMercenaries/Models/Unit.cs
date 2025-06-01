@@ -1,36 +1,40 @@
+using Newtonsoft.Json;
+
 namespace GameMercenaries.models;
 
-public class Unit(
-    string id,
-    string name,
-    int health,
-    int actions,
-    int weight,
-    string info,
-    Dictionary<string, int> rules)
+public class Unit
 {
-    public string Id { get; } = id;
-    public string Name { get; } = name;
-    public int MaxHealth { get; } = health;
-    public int CurrentHealth { get; private set; } = health;
-    public int MaxActions { get; } = actions;
-    public int CurrentActions { get; private set; } = actions;
-    public int Weight { get; } = weight;
-    public Dictionary<string, int> Rules { get; } = rules;
+    public int Id { get; init; }
+    public string Name { get; init; }
+    public int MaxHealth { get; init; }
+    public int MaxActions { get; init; }
+    public int Weight { get; init; }
+    public string Info { get; init; }
+    public Dictionary<string, int> Rules { get; init; } = [];
 
-    public bool IsAlive()
+    [JsonIgnore]
+    public int CurrentHealth { get; private set; }
+
+    [JsonIgnore]
+    public int CurrentActions { get; private set; }
+
+    [JsonConstructor]
+    public Unit()
     {
-        return CurrentHealth > 0;
+        CurrentHealth = MaxHealth;
+        CurrentActions = MaxActions;
     }
+
+    public bool IsAlive() => CurrentHealth > 0;
 
     public void TakeDamage(int damage)
     {
         CurrentHealth -= Math.Min(CurrentHealth, damage);
     }
 
-    public void RestoreHealth(int healthPoints)
+    public void RestoreHealth(int hp)
     {
-        CurrentHealth = Math.Min(CurrentHealth + healthPoints, MaxHealth);
+        CurrentHealth = Math.Min(CurrentHealth + hp, MaxHealth);
     }
 
     public void UseActions(int actions)
@@ -40,21 +44,18 @@ public class Unit(
             Console.WriteLine("У вас недостаточно действий");
             return;
         }
-        
+
         CurrentActions -= actions;
-        Console.WriteLine($"Количество потраченых вами действий: {actions}");
+        Console.WriteLine($"Количество потраченных вами действий: {actions}");
     }
 
-    public void RestoreAllActions()
-    {
-        CurrentActions = MaxActions;
-    }
-    
+    public void RestoreAllActions() => CurrentActions = MaxActions;
+
     public void PrintInfo()
     {
-        Console.WriteLine(info);
+        Console.WriteLine(Info);
         Console.WriteLine($"Имя: {Name}");
-        Console.WriteLine($"Здорововье: {CurrentHealth} из {MaxHealth}");
+        Console.WriteLine($"Здоровье: {CurrentHealth} из {MaxHealth}");
         Console.WriteLine($"Действия: {CurrentActions} из {MaxActions}");
         Console.WriteLine($"Грузоподъёмность: {Weight} кг");
     }

@@ -1,13 +1,9 @@
-namespace GameMercenaries.models.items;
+using Newtonsoft.Json;
 
-public class Armor(
-    string id,
-    string name,
-    string itemType,
-    int weight,
-    string info,
-    int damageReduction
-    ) : Item(id, name, itemType, weight, info)
+namespace GameMercenaries.Models.Items;
+
+public class Armor : Item
 {
-    public int DamageReduction { get; } = damageReduction;
+    [JsonProperty("damage_reduction")]
+    public int DamageReduction { get; set; }
 }

@@ -1,9 +1,3 @@
-namespace GameMercenaries.models.items;
+namespace GameMercenaries.Models.Items;
 
-public class Artefact(
-    string id,
-    string name,
-    string itemType,
-    int weight,
-    string info
-    ) : Item(id, name, itemType, weight, info);
+public class Artefact : Item;
