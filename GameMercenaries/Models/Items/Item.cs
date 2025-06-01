@@ -11,5 +11,6 @@ public abstract class Item(
     public string Name { get; } = name;
     public string ItemType { get; } = itemType;
     public int Weight { get; } = weight;
-    public string Info { get; } = info;
+    
+    public void PrintInfo() => Console.WriteLine(info);
 }

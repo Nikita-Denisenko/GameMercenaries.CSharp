@@ -16,7 +16,6 @@ public class Unit(
     public int MaxActions { get; } = actions;
     public int CurrentActions { get; private set; } = actions;
     public int Weight { get; } = weight;
-    public string Info { get; } = info;
     public Dictionary<string, int> Rules { get; } = rules;
 
     public bool IsAlive()
@@ -49,5 +48,14 @@ public class Unit(
     public void RestoreAllActions()
     {
         CurrentActions = MaxActions;
+    }
+    
+    public void PrintInfo()
+    {
+        Console.WriteLine(info);
+        Console.WriteLine($"Имя: {Name}");
+        Console.WriteLine($"Здорововье: {CurrentHealth} из {MaxHealth}");
+        Console.WriteLine($"Действия: {CurrentActions} из {MaxActions}");
+        Console.WriteLine($"Грузоподъёмность: {Weight} кг");
     }
 }

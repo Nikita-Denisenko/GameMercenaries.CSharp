@@ -16,10 +16,11 @@ public class Player(
     public Unit Unit { get; } = unit;
     public Location Location { get; private set; } = GenerateStartLocation();
     public Item ItemOnLocation { get; private set; } = GenerateStartItem();
+    public bool ItemWasTaken { get; private set; } = false;
     public List<Item> Inventory { get; } = [];
     public int InventoryWeight { get; private set; }
     public HashSet<Artefact> Artefacts { get; private set; } = [];
-
+    
     public void ChangeLocation()
     {
         Location = GenerateNewLocation(Location);
@@ -36,6 +37,7 @@ public class Player(
         
         Inventory.Add(ItemOnLocation);
         InventoryWeight += ItemOnLocation.Weight;
+        ItemWasTaken = true;
         Console.WriteLine($"Вы подобрали предмет {ItemOnLocation.Name}");
     }
 

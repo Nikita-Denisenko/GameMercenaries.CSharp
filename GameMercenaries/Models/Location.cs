@@ -17,7 +17,6 @@ public class Location(
     public string[] DistantLocations { get; } = distantLocations;
     public string[] UnavailableLocations { get; } = unavailableLocations;
     public Dictionary<string, int[]> Items { get; } = items;
-    public string Info { get; } = info;
     public Dictionary<string, int> Rules { get; } = rules;
     public List<Player> CurrentPlayers { get; } = [];
     
@@ -30,4 +29,6 @@ public class Location(
     {
         CurrentPlayers.Remove(player);
     }
+
+    public void PrintInfo() => Console.WriteLine(info);
 }
