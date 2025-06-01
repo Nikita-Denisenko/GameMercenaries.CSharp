@@ -1,5 +1,5 @@
 using GameMercenaries.gameManagement;
-using GameMercenaries.models;
+using GameMercenaries.Models;
 
 namespace GameMercenaries.GameLogic;
 

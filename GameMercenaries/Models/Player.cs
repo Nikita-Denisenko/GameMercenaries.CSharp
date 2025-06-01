@@ -1,6 +1,6 @@
 using GameMercenaries.Models.Items;
 
-namespace GameMercenaries.models;
+namespace GameMercenaries.Models;
 
 using static GameLogic.LocationsLogic;
 using static UserInterface.UserInterface;

@@ -1,16 +1,29 @@
 using Newtonsoft.Json;
 
-namespace GameMercenaries.models;
+namespace GameMercenaries.Models;
 
 public class Unit
 {
+    [JsonProperty("id")]
     public int Id { get; init; }
-    public string Name { get; init; }
+
+    [JsonProperty("name")]
+    public required string  Name { get; init; }
+
+    [JsonProperty("health")]
     public int MaxHealth { get; init; }
-    public int MaxActions { get; init; }
+
+    [JsonProperty("actions")]
+    public int MaxActions { get; init;}
+
+    [JsonProperty("weight")]
     public int Weight { get; init; }
-    public string Info { get; init; }
-    public Dictionary<string, int> Rules { get; init; } = [];
+
+    [JsonProperty("info")]
+    public required string Info { get; init; }
+
+    [JsonProperty("rules")]
+    public Dictionary<string, object> Rules { get; init; } = new();
 
     [JsonIgnore]
     public int CurrentHealth { get; private set; }

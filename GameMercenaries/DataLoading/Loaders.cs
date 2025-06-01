@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using GameMercenaries.models;
+using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
 using Newtonsoft.Json.Linq;
 
@@ -18,7 +18,7 @@ public static class Loaders
     public static List<Unit> LoadUnits()
     {
         var json = File.ReadAllText("GameMercenaries/data/units.json");
-        var units = JsonConvert.DeserializeObject<List<Unit>>(json) ?? new List<Unit>();
+        var units = JsonConvert.DeserializeObject<List<Unit>>(json) ?? [];
 
         return units;
     }
@@ -26,7 +26,7 @@ public static class Loaders
     public static List<Item> LoadItems()
     {
         var json = File.ReadAllText("GameMercenaries/Data/items.json");
-        var rawDict = JsonConvert.DeserializeObject<Dictionary<string, JObject>>(json);
+        var rawDict = JsonConvert.DeserializeObject<Dictionary<string, JObject>>(json) ?? [];
         var items = new List<Item>();
 
         foreach (var (idStr, obj) in rawDict)

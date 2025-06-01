@@ -1,4 +1,4 @@
-using GameMercenaries.models;
+using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
 using static GameMercenaries.DataLoading.Loaders;
 
