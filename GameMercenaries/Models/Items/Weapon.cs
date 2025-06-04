@@ -21,8 +21,6 @@ public class Weapon : Item
 
     public int GenerateDamage()
     {
-        if (DamageRange.Length != 2) return 0;
-
         Random random = new();
         return random.Next(DamageRange[0], DamageRange[1] + 1);
     }

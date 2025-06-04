@@ -29,7 +29,7 @@
     "rules": {
       "cut_enemy_accuracy": 1,
       "cut_enemy_damage": 10,
-      "unavailable_items": ["11", "12"]
+      "unavailable_items": [11, 12]
     }
   },
   {
@@ -80,8 +80,8 @@
     "weight": 12,
     "info": "Ваш персонаж - Человек-краб.\nНе может использовать оружие.",
     "rules": {
-      "unavailable_items": ["4", "5", "6", "7", "8", "9"],
-      "damage": 40
+      "unavailable_items": [4, 5, 6, 7, 8, 9],
+      "hand_attack_bonus": 20
     }
   }
 ]

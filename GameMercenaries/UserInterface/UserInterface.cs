@@ -93,11 +93,11 @@ public static class UserInterface
         
         var playerLocation = currentPlayer.Location;
         var adjacentLocations = playerLocation.AdjacentLocations
-            .Select(id => GameData.Locations[int.Parse(id) - 1]).ToList();
+            .Select(id => GameData.Locations[id - 1]).ToList();
         var distantLocations = playerLocation.DistantLocations
-            .Select(id => GameData.Locations[int.Parse(id) - 1]).ToList();
+            .Select(id => GameData.Locations[id - 1]).ToList();
         var unavailableLocations = playerLocation.UnavailableLocations
-            .Select(id => GameData.Locations[int.Parse(id) - 1]).ToList();
+            .Select(id => GameData.Locations[id - 1]).ToList();
         
         Console.WriteLine($"Ваша локация ({playerLocation.Name}):");
         PrintPlayers(playerLocation.CurrentPlayers, currentPlayer);

@@ -25,6 +25,7 @@ public class Player(
     {
         Location = GenerateNewLocation(Location);
         ItemOnLocation = GenerateItem(Location);
+        ItemWasTaken = false;
     }
 
     public void TakeItem()

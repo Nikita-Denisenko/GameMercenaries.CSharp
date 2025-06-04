@@ -18,6 +18,7 @@ public abstract class Item
 
     [JsonProperty("info")]
     public string Info { get; set; } = string.Empty;
+    
 
     public virtual void PrintInfo()
     {

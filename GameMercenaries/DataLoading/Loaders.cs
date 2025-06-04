@@ -1,39 +1,34 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
-using Newtonsoft.Json.Linq;
 
 namespace GameMercenaries.DataLoading;
 
 public static class Loaders
 {
-
     public static List<Location> LoadLocations()
     {
-        var json = File.ReadAllText("GameMercenaries/Data/locations.json");
-        return JsonConvert.DeserializeObject<List<Location>>(json) ?? [];
+        var json = File.ReadAllText("D:\\С# Projects\\GameMercenaries\\GameMercenaries\\Data\\locations.json");
+        return JsonConvert.DeserializeObject<List<Location>>(json) ?? new List<Location>();
     }
-    
-    
+
     public static List<Unit> LoadUnits()
     {
-        var json = File.ReadAllText("GameMercenaries/data/units.json");
-        var units = JsonConvert.DeserializeObject<List<Unit>>(json) ?? [];
-
-        return units;
+        var json = File.ReadAllText("D:\\С# Projects\\GameMercenaries\\GameMercenaries\\Data\\units.json");
+        return JsonConvert.DeserializeObject<List<Unit>>(json) ?? new List<Unit>();
     }
 
     public static List<Item> LoadItems()
     {
-        var json = File.ReadAllText("GameMercenaries/Data/items.json");
-        var rawDict = JsonConvert.DeserializeObject<Dictionary<string, JObject>>(json) ?? [];
+        var json = File.ReadAllText("D:\\С# Projects\\GameMercenaries\\GameMercenaries\\Data\\items.json");
+        var rawList = JsonConvert.DeserializeObject<List<JObject>>(json) ?? new List<JObject>();
         var items = new List<Item>();
 
-        foreach (var (idStr, obj) in rawDict)
+        foreach (var obj in rawList)
         {
-            obj["id"] = int.Parse(idStr); // добавить ID в объект
-
             var type = obj["item_type"]?.ToString();
+
             Item? item = type switch
             {
                 "Оружие" => obj.ToObject<Weapon>(),
@@ -52,4 +47,3 @@ public static class Loaders
         return items;
     }
 }
-    

@@ -11,13 +11,13 @@ public class Location
     public required string Name { get; init; }
 
     [JsonProperty("adjacent_locations")]
-    public required string[] AdjacentLocations { get; init; }
+    public required int[] AdjacentLocations { get; init; }
 
     [JsonProperty("distant_locations")]
-    public required string[] DistantLocations { get; init; }
+    public required int[] DistantLocations { get; init; }
 
     [JsonProperty("unavailable_locations")]
-    public required string[] UnavailableLocations { get; init; }
+    public required int[] UnavailableLocations { get; init; }
 
     [JsonProperty("items")]
     public required Dictionary<string, int[]> Items { get; init; }
@@ -26,7 +26,7 @@ public class Location
     public required string Info { get; init; }
 
     [JsonProperty("rules")]
-    public Dictionary<string, int>? Rules { get; init; }
+    public required Dictionary<string, int> Rules { get; init; }
 
     [JsonIgnore]
     public List<Player> CurrentPlayers { get; } = [];
