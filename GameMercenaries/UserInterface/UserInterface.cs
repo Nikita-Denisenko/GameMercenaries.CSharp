@@ -1,4 +1,5 @@
 using GameMercenaries.Constants;
+using GameMercenaries.GameLogic.FightLogic;
 using GameMercenaries.gameManagement;
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
@@ -134,7 +135,7 @@ public static class UserInterface
         
         Console.WriteLine("1. Выбросить предмет");
         
-        var hasMedkit = inventory.Any(item => (ItemId)item.Id == ItemId.Medkit);
+        var hasMedkit = inventory.Any(item => (ItemIdType)item.Id == ItemIdType.Medkit);
         
         if (!hasMedkit)
         {
@@ -202,5 +203,15 @@ public static class UserInterface
         
         Console.WriteLine("1. Назад");
         return actionsQuantity;
+    }
+
+    public static void PrintFightResult(FightResult fightResult)
+    {
+        Console.WriteLine(fightResult.Message);
+        
+        if (!fightResult.WasSuccessful || fightResult.DefenderDied) return;
+        
+        Console.WriteLine($"Нанесённый урон: {fightResult.DamageDealt}");
+        Console.WriteLine($"Текущее здоровье игрока: {fightResult.DefenderCurrentHealth} из {fightResult.DefenderMaxHealth}");
     }
 }

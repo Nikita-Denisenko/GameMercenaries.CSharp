@@ -1,6 +1,6 @@
 namespace GameMercenaries.Constants
-{
-    public enum ItemId
+{ 
+    public enum ItemIdType
     {
         LilacRing = 1,
         BronzePendant,

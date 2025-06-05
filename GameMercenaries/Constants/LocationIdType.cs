@@ -1,6 +1,6 @@
 namespace GameMercenaries.Constants
 {
-    public enum LocationId
+    public enum LocationIdType
     {
         Supermarket = 1,
         Hospital,

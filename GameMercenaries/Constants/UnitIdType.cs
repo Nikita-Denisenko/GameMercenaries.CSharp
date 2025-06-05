@@ -1,6 +1,6 @@
 namespace GameMercenaries.Constants
 {
-    public enum UnitId
+    public enum UnitIdType
     {
         Soldier = 1,
         Brawler,
