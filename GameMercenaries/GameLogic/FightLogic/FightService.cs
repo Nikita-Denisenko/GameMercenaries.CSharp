@@ -116,6 +116,11 @@ public static class FightService
     {
         return attacker.Location == defender.Location;
     }
+
+    private static bool PlayersCanGunFight(Weapon weapon, int distance)
+    {
+        return weapon.Distance >= distance;
+    }
     
     public static FightResult HandFight(Player attacker, Player defender)
     {
@@ -144,7 +149,7 @@ public static class FightService
                 DefenderDied = false,
                 DefenderCurrentHealth = defender.Unit.CurrentHealth,
                 DefenderMaxHealth = defender.Unit.MaxHealth,
-                Message = $"Игрок {attacker.UserName} увернулся от вашей атаки!"
+                Message = $"Игрок {defender.UserName} увернулся от вашей атаки!"
             };
         }
 
@@ -159,10 +164,77 @@ public static class FightService
                 DefenderDied = true,
                 DefenderCurrentHealth = 0,
                 DefenderMaxHealth = defender.Unit.MaxHealth,
-                Message = $"Вы убили игрока {attacker.UserName}!"
+                Message = $"Вы убили игрока {defender.UserName}!"
             };
         }
 
+        return new FightResult
+        {
+            WasSuccessful = true,
+            DamageDealt = damage,
+            DefenderDied = false,
+            DefenderCurrentHealth = defender.Unit.CurrentHealth,
+            DefenderMaxHealth = defender.Unit.MaxHealth,
+            Message = $"Вы успешно атаковали игрока {defender.UserName}!"
+        };
+    }
+
+    public static FightResult GunFight(Player attacker, Player defender, Weapon weapon)
+    {
+        var distance = CalculateDistance(attacker.Location, defender.Location);
+        
+        if (!PlayersCanGunFight(weapon, distance))
+        {
+            return new FightResult
+            {
+                WasSuccessful = false,
+                DamageDealt = 0,
+                DefenderDied = false,
+                DefenderCurrentHealth = defender.Unit.CurrentHealth,
+                DefenderMaxHealth = defender.Unit.MaxHealth,
+                Message = $"Дальность стрельбы вашего оружия не позволяет атаковать этого игрока!"
+            };
+        }
+
+        var accuracy = CalculateAccuracy(
+            weapon,
+            attacker.Unit,
+            attacker.Inventory,
+            defender.Unit,
+            defender.Inventory,
+            distance
+        );
+
+        var damage = CalculateWeaponDamage(weapon, defender.Unit, defender.Inventory);
+
+        bool hit = AttackWasSuccessful(accuracy);
+
+        if (!hit)
+        {
+            return new FightResult
+            {
+                WasSuccessful = false,
+                DamageDealt = 0,
+                DefenderDied = false,
+                DefenderCurrentHealth = defender.Unit.CurrentHealth,
+                DefenderMaxHealth = defender.Unit.MaxHealth,
+                Message = $"Вы не попали в игрока {defender.UserName}!"
+            };
+        }
+
+        if (!defender.Unit.IsAlive())
+        {
+            return new FightResult
+            {
+                WasSuccessful = true,
+                DamageDealt = damage,
+                DefenderDied = true,
+                DefenderCurrentHealth = 0,
+                DefenderMaxHealth = defender.Unit.MaxHealth,
+                Message = $"Вы убили игрока {defender.UserName}!"
+            };
+        }
+        
         return new FightResult
         {
             WasSuccessful = true,
