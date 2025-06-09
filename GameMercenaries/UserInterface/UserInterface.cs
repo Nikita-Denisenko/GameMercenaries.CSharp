@@ -205,13 +205,13 @@ public static class UserInterface
         return actionsQuantity;
     }
 
-    public static void PrintFightResult(FightResult fightResult)
+    public static void PrintFightResult(HandFightResult handFightResult)
     {
-        Console.WriteLine(fightResult.Message);
+        Console.WriteLine(handFightResult.Message);
         
-        if (!fightResult.WasSuccessful || fightResult.DefenderDied) return;
+        if (!handFightResult.WasSuccessful || handFightResult.DefenderDied) return;
         
-        Console.WriteLine($"Нанесённый урон: {fightResult.DamageDealt}");
-        Console.WriteLine($"Текущее здоровье игрока: {fightResult.DefenderCurrentHealth} из {fightResult.DefenderMaxHealth}");
+        Console.WriteLine($"Нанесённый урон: {handFightResult.DamageDealt}");
+        Console.WriteLine($"Текущее здоровье игрока: {handFightResult.DefenderCurrentHealth} из {handFightResult.DefenderMaxHealth}");
     }
 }

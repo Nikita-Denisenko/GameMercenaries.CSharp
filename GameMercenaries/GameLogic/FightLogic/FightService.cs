@@ -122,11 +122,11 @@ public static class FightService
         return weapon.Distance >= distance;
     }
     
-    public static FightResult HandFight(Player attacker, Player defender)
+    public static HandFightResult HandFight(Player attacker, Player defender)
     {
         if (!PlayersCanHandfight(attacker, defender)) 
         {
-            return new FightResult
+            return new HandFightResult
             {
                 WasSuccessful = false,
                 DamageDealt = 0,
@@ -142,7 +142,7 @@ public static class FightService
 
         if (!hit)
         {
-            return new FightResult
+            return new HandFightResult
             {
                 WasSuccessful = false,
                 DamageDealt = 0,
@@ -157,7 +157,7 @@ public static class FightService
         
         if (!defender.Unit.IsAlive())
         {
-            return new FightResult
+            return new HandFightResult
             {
                 WasSuccessful = true,
                 DamageDealt = damage,
@@ -168,7 +168,7 @@ public static class FightService
             };
         }
 
-        return new FightResult
+        return new HandFightResult
         {
             WasSuccessful = true,
             DamageDealt = damage,
@@ -179,20 +179,69 @@ public static class FightService
         };
     }
 
-    public static FightResult GunFight(Player attacker, Player defender, Weapon weapon)
+    private static void InjuryLogic(
+        Player attacker, 
+        bool attackWasSuccessful,
+        out bool gotInjury,
+        out int damageOfInjury,
+        out bool attackerDied)
+    {
+        const LocationIdType chemicalPlant = LocationIdType.ChemicalPlant;
+
+        if (chemicalPlant != (LocationIdType)attacker.Location.Id)
+        {
+            gotInjury = false;
+            damageOfInjury = 0;
+            attackerDied = false;
+            return;
+        }
+        
+        const int minPercent = 1;
+        const int maxPercent = 100;
+        
+        // Если игрок попал в цель, вероятность получить травму 10%, если нет 50%.
+        var injuryProbability = attackWasSuccessful ? 10 : 50;
+        var number = new Random().Next(minPercent, maxPercent + 1);
+
+        gotInjury = number <= injuryProbability;
+        if (!gotInjury)
+        {
+            damageOfInjury = 0;
+            attackerDied = false;
+            return;
+        }
+        
+        const int minDamage = 10;
+        const int maxDamage = 30;
+        
+        damageOfInjury = new Random().Next(minDamage, maxDamage + 1);
+        
+        attacker.Unit.TakeDamage( damageOfInjury);
+
+        attackerDied = !attacker.Unit.IsAlive();
+
+    }
+
+    public static GunFightResult GunFight(Player attacker, Player defender, Weapon weapon)
     {
         var distance = CalculateDistance(attacker.Location, defender.Location);
         
         if (!PlayersCanGunFight(weapon, distance))
         {
-            return new FightResult
+            return new GunFightResult
             {
                 WasSuccessful = false,
                 DamageDealt = 0,
                 DefenderDied = false,
                 DefenderCurrentHealth = defender.Unit.CurrentHealth,
                 DefenderMaxHealth = defender.Unit.MaxHealth,
-                Message = $"Дальность стрельбы вашего оружия не позволяет атаковать этого игрока!"
+                Message = $"Дальность стрельбы вашего оружия не позволяет атаковать этого игрока!",
+                HitByRpgPlayers = [],
+                MessagesForHitPlayers = [],
+                AttackerGotInjuredAtFactory = false,
+                DamageOfInjury = 0,
+                AttackerDiedByInjury = false,
+                SideEffectMessage = null
             };
         }
 
@@ -208,41 +257,75 @@ public static class FightService
         var damage = CalculateWeaponDamage(weapon, defender.Unit, defender.Inventory);
 
         bool hit = AttackWasSuccessful(accuracy);
+        
+        InjuryLogic(
+            attacker, 
+            hit,
+            out bool gotInjury, 
+            out int damageOfInjury, 
+            out bool attackerDied);
 
         if (!hit)
         {
-            return new FightResult
+            return new GunFightResult
             {
                 WasSuccessful = false,
                 DamageDealt = 0,
                 DefenderDied = false,
                 DefenderCurrentHealth = defender.Unit.CurrentHealth,
                 DefenderMaxHealth = defender.Unit.MaxHealth,
-                Message = $"Вы не попали в игрока {defender.UserName}!"
+                Message = $"Вы не попали в игрока {defender.UserName}!",
+                HitByRpgPlayers = [],
+                MessagesForHitPlayers = [],
+                AttackerGotInjuredAtFactory = gotInjury,
+                DamageOfInjury = damageOfInjury,
+                AttackerDiedByInjury = attackerDied,
+                SideEffectMessage = gotInjury 
+                    ? $"Вы отравились на заводе и получили {damageOfInjury} урона." +
+                      (attackerDied ? " Вы умерли от последствий!" : "")
+                    : null
             };
         }
 
         if (!defender.Unit.IsAlive())
         {
-            return new FightResult
+            return new GunFightResult
             {
                 WasSuccessful = true,
                 DamageDealt = damage,
                 DefenderDied = true,
                 DefenderCurrentHealth = 0,
                 DefenderMaxHealth = defender.Unit.MaxHealth,
-                Message = $"Вы убили игрока {defender.UserName}!"
+                Message = $"Вы убили игрока {defender.UserName}!",
+                HitByRpgPlayers = [],
+                MessagesForHitPlayers = [],
+                AttackerGotInjuredAtFactory = gotInjury,
+                DamageOfInjury = damageOfInjury,
+                AttackerDiedByInjury = attackerDied,
+                SideEffectMessage = gotInjury 
+                    ? $"Вы отравились на заводе и получили {damageOfInjury} урона." +
+                      (attackerDied ? " Вы умерли от последствий!" : "")
+                    : null
             };
         }
         
-        return new FightResult
+        return new GunFightResult
         {
             WasSuccessful = true,
             DamageDealt = damage,
             DefenderDied = false,
             DefenderCurrentHealth = defender.Unit.CurrentHealth,
             DefenderMaxHealth = defender.Unit.MaxHealth,
-            Message = $"Вы успешно атаковали игрока {defender.UserName}!"
+            Message = $"Вы успешно атаковали игрока {defender.UserName}!",
+            HitByRpgPlayers = [],
+            MessagesForHitPlayers = [],
+            AttackerGotInjuredAtFactory = gotInjury,
+            DamageOfInjury = damageOfInjury,
+            AttackerDiedByInjury = attackerDied,
+            SideEffectMessage = gotInjury 
+                ? $"Вы отравились на заводе и получили {damageOfInjury} урона." +
+                  (attackerDied ? " Вы умерли от последствий!" : "")
+                : null
         };
     }
 }
