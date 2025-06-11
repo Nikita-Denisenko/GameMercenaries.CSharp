@@ -3,6 +3,7 @@ namespace GameMercenaries.GameLogic.FightLogic;
 using Models;
 using Models.Items;
 using static FightHelpers;
+using static SideEffectsLogic;
 
 
 public static class FightService
@@ -97,10 +98,24 @@ public static class FightService
             defender.Inventory,
             distance
         );
-
+        
+        bool hit = AttackWasSuccessful(accuracy);
+        
         var damage = CalculateWeaponDamage(weapon, defender.Unit, defender.Inventory);
 
-        bool hit = AttackWasSuccessful(accuracy);
+        TwoPistolsLogic(
+            attacker, 
+            weapon, 
+            accuracy, 
+            out bool weaponIsPistol, 
+            out int totalDamage
+            );
+
+        if (weaponIsPistol)
+        {
+            hit = totalDamage > 0;
+            damage = totalDamage;
+        }
         
         InjuryLogic(
             attacker, 

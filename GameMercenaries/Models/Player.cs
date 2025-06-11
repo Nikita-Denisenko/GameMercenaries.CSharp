@@ -47,8 +47,7 @@ public class Player(
     {
         Console.WriteLine("Ваш инвентарь:");
         PrintItems(Inventory);
-        Console.WriteLine("Выберите какой предмет вы хотите выбросать:");
-        var number = GetNumberOfAction(Inventory.Count);
+        var number = GetNumberOfAction(Inventory.Count, "Выберите какой предмет вы хотите выбросать:");
         var item = Inventory[number - 1];
         Inventory.Remove(item);
         InventoryWeight -= item.Weight;

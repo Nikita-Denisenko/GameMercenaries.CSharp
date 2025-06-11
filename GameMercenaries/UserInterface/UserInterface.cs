@@ -47,12 +47,11 @@ public static class UserInterface
         Console.WriteLine();
     }
     
-    public static int GetNumberOfAction(int actionsQuantity)
+    public static int GetNumberOfAction(int actionsQuantity, string message)
     {
         while (true)
         {
-            // Номер чего(действия, игрока, предмета) вводить, логичнее записать в вышестоящий
-            // метод, так как это зависит от контекста.
+            Console.WriteLine(message);
                 
             var input = Console.ReadLine();
             
@@ -213,5 +212,16 @@ public static class UserInterface
         
         Console.WriteLine($"Нанесённый урон: {handFightResult.DamageDealt}");
         Console.WriteLine($"Текущее здоровье игрока: {handFightResult.DefenderCurrentHealth} из {handFightResult.DefenderMaxHealth}");
+    }
+
+    public static int PrintPistolsMenu(int quantityPistols)
+    {
+        const int actionsQuantity = 2;
+        
+        Console.WriteLine($"Количество пистолетов в вашем инветаре: {quantityPistols}.");
+        Console.WriteLine("1. Стрелять из одного");
+        Console.WriteLine("2. Стрелять из двух");
+
+        return  actionsQuantity;
     }
 }
