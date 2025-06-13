@@ -29,17 +29,29 @@ public class Player(
         ItemWasTaken = false;
     }
 
-    public void TakeItem()
+    public bool CanTakeItem(Item item)
     {
-        if (Unit.Weight < InventoryWeight + ItemOnLocation.Weight)
+        return Unit.Weight >= InventoryWeight + item.Weight;
+    }
+    
+    public void TakeItem(Item item)
+    {
+        Inventory.Add(item);
+        InventoryWeight += item.Weight;
+    }
+
+    public void FindItem()
+    {
+        if (!CanTakeItem(ItemOnLocation))
         {
             Console.WriteLine("Недостаточно места в инвентаре для этого предмета!");
             return;
         }
         
-        Inventory.Add(ItemOnLocation);
-        InventoryWeight += ItemOnLocation.Weight;
+        TakeItem(ItemOnLocation);
+        
         ItemWasTaken = true;
+        
         Console.WriteLine($"Вы подобрали предмет {ItemOnLocation.Name}");
     }
 

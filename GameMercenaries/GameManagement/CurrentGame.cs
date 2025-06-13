@@ -1,5 +1,6 @@
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
+using static GameMercenaries.GameLogic.EntityLogic.UnitLogic.LizardManSkills;
 
 namespace GameMercenaries.gameManagement;
 
@@ -9,6 +10,7 @@ public class CurrentGame(
     public List<Location> Locations { get; } = GameData.Locations;
     public List<Unit> Units { get; } = GameData.Units;
     public List<Item> Items { get; } =  GameData.Items;
+    public int DayNumber { get; private set; } = 0;
     public List<Player> AllPlayers { get; } = players;
     public List<Player> AlivePlayers { get; } = players;
     public List<string> GameEvents { get; } = [];
@@ -22,4 +24,12 @@ public class CurrentGame(
     {
         GameEvents.Add(eventText);
     }
+
+    public void FinishDay()
+    {
+        LizardManLogic(AlivePlayers);
+        DayNumber++;
+    }
+    
+    
 }

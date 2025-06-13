@@ -15,7 +15,7 @@ public static class UserInterface
         foreach (var item in items)
         {
             currentItemNumber++;
-            Console.WriteLine($"{currentItemNumber}. {item.Name}");
+            Console.WriteLine($"{currentItemNumber}. {item.Name} Вес: {item.Weight} кг.");
         }    
     }
 
@@ -204,7 +204,7 @@ public static class UserInterface
         return actionsQuantity;
     }
 
-    public static void PrintFightResult(HandFightResult handFightResult)
+    public static void PrintHandFightResult(HandFightResult handFightResult)
     {
         Console.WriteLine(handFightResult.Message);
         
@@ -212,6 +212,36 @@ public static class UserInterface
         
         Console.WriteLine($"Нанесённый урон: {handFightResult.DamageDealt}");
         Console.WriteLine($"Текущее здоровье игрока: {handFightResult.DefenderCurrentHealth} из {handFightResult.DefenderMaxHealth}");
+    }
+
+    public static void PrintGunFight(GunFightResult gunFightResult)
+    {
+        Console.WriteLine(gunFightResult.Message); 
+
+        if (!gunFightResult.WasSuccessful)
+        {
+            if (!string.IsNullOrEmpty(gunFightResult.SideEffectMessage))
+            {
+                Console.WriteLine(gunFightResult.SideEffectMessage);
+            }
+            return; 
+        }
+
+        if (!gunFightResult.DefenderDied)
+        {
+            Console.WriteLine($"Нанесённый урон: {gunFightResult.DamageDealt}");
+            Console.WriteLine($"Текущее здоровье: {gunFightResult.DefenderCurrentHealth} из {gunFightResult.DefenderMaxHealth}");
+        }
+
+        foreach (var message in gunFightResult.MessagesForHitPlayers) 
+        {
+            Console.WriteLine(message);
+        }
+
+        if (!string.IsNullOrEmpty(gunFightResult.SideEffectMessage)) 
+        {
+            Console.WriteLine(gunFightResult.SideEffectMessage); 
+        }
     }
 
     public static int PrintPistolsMenu(int quantityPistols)
