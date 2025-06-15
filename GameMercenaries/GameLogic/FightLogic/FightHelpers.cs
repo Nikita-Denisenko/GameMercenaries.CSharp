@@ -7,13 +7,14 @@ namespace GameMercenaries.GameLogic.FightLogic;
 
 public static class FightHelpers
 {
+    private static readonly Random Random = new Random();
     public static int CalculateHandDamage(Unit attackerUnit, List<Item> inventory)
     {
         const int minDamage = 15;
         const int maxDamage = 30;
         const string handAttackBonus = "hand_attack_bonus";
         
-        var baseDamage = new Random().Next(minDamage, maxDamage + 1);
+        var baseDamage = Random.Next(minDamage, maxDamage + 1);
         var unitId = (UnitIdType)attackerUnit.Id;
 
         if (unitId == UnitIdType.CrabMan) 
@@ -107,7 +108,7 @@ public static class FightHelpers
     public static bool AttackWasSuccessful(int accuracy)
     {
         var minRequiredDiceValue = CalculateMinRequiredDiceValue(accuracy);
-        var playerDiceValue = new Random().Next((int)DiceValueType.One, (int)DiceValueType.Six + 1);
+        var playerDiceValue = Random.Next((int)DiceValueType.One, (int)DiceValueType.Six + 1);
         return playerDiceValue >= minRequiredDiceValue;
     }
 

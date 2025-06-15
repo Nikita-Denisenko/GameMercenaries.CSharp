@@ -9,6 +9,7 @@ namespace GameMercenaries.GameLogic.FightLogic;
 
 public static class SideEffectsLogic
 {
+      private static readonly Random Random = new();
       public static void InjuryLogic(
         Player attacker, 
         bool attackWasSuccessful,
@@ -32,7 +33,7 @@ public static class SideEffectsLogic
         
         // Если игрок попал в цель, вероятность получить травму 10%, если нет 50%.
         var injuryProbability = attackWasSuccessful ? 10 : 50;
-        var number = new Random().Next(minPercent, maxPercent + 1);
+        var number = Random.Next(minPercent, maxPercent + 1);
 
         gotInjury = number <= injuryProbability;
         if (!gotInjury)
@@ -45,7 +46,7 @@ public static class SideEffectsLogic
         const int minDamage = 10;
         const int maxDamage = 30;
         
-        damageOfInjury = new Random().Next(minDamage, maxDamage + 1);
+        damageOfInjury = Random.Next(minDamage, maxDamage + 1);
         
         attacker.Unit.TakeDamage( damageOfInjury);
 
@@ -93,7 +94,7 @@ public static class SideEffectsLogic
         
         foreach (var player in hitByRpgPlayers)
         {
-            var damage = new Random().Next(minDamage, maxDamage + 1);
+            var damage = Random.Next(minDamage, maxDamage + 1);
             
             player.Unit.TakeDamage(damage);
             
@@ -144,5 +145,61 @@ public static class SideEffectsLogic
 
         totalDamage = resultDamage;
         weaponIsPistol = true;
+    }
+
+    private static bool EquipmentIsBroken(int breakEquipmentChance)
+    {
+        const int minPercent = 1;
+        const int maxPercent = 100;
+        
+        var number = Random.Next(minPercent, maxPercent + 1);
+
+        return number <= breakEquipmentChance;
+    }
+
+    private static bool TryBreakEquipmentById(Player defender, ItemIdType itemId)
+    {
+        var item = defender.Inventory.FirstOrDefault(item => item.Id == (int)itemId);
+
+        if (item is null) return false;
+        
+        switch ((ItemIdType)item.Id)
+        {
+            case ItemIdType.BodyArmor:
+                var bodyArmor = (Armor)item;
+                if (EquipmentIsBroken(bodyArmor.BreakChance))
+                {
+                    defender.Inventory.Remove(bodyArmor);
+                    return true;
+                }
+                break;
+            
+            case ItemIdType.CamouflageCloak:
+                var camouflageCloak = (Camouflage)item;
+                if (EquipmentIsBroken(camouflageCloak.BreakChance))
+                {
+                    defender.Inventory.Remove(camouflageCloak);
+                    return true;
+                }
+                break;
+        }
+        
+        return false;
+    }
+
+    public static List<string> BreakEquipmentLogic(Player defender)
+    {
+        const ItemIdType bodyArmor = ItemIdType.BodyArmor;
+        const ItemIdType camouflageCloak = ItemIdType.CamouflageCloak;
+
+        List<string> messages = [];
+        
+        if (TryBreakEquipmentById(defender, bodyArmor)) 
+            messages.Add($"Бронежилет игрока {defender.UserName} разбит от вашей атаки!");
+        
+        if (TryBreakEquipmentById(defender, camouflageCloak))
+            messages.Add($"Маскировочный плащ игрока {defender.UserName} разбит от вашей атаки!");
+
+        return messages;
     }
 }

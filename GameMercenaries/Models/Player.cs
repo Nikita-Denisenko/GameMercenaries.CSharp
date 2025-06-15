@@ -1,4 +1,3 @@
-using System.Net.NetworkInformation;
 using GameMercenaries.Models.Items;
 
 namespace GameMercenaries.Models;

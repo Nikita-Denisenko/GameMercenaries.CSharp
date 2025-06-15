@@ -227,6 +227,11 @@ public static class UserInterface
             return; 
         }
 
+        foreach (var message in gunFightResult.EquipmentBreakMessages)
+        {
+            Console.WriteLine(message);
+        }
+
         if (!gunFightResult.DefenderDied)
         {
             Console.WriteLine($"Нанесённый урон: {gunFightResult.DamageDealt}");

@@ -86,7 +86,8 @@ public static class FightService
                 AttackerGotInjuredAtFactory = false,
                 DamageOfInjury = 0,
                 AttackerDiedByInjury = false,
-                SideEffectMessage = null
+                SideEffectMessage = null,
+                EquipmentBreakMessages = []
             };
         }
 
@@ -142,7 +143,8 @@ public static class FightService
                 SideEffectMessage = gotInjury 
                     ? $"Вы отравились на заводе и получили {damageOfInjury} урона." +
                       (attackerDied ? " Вы умерли от последствий!" : "")
-                    : null
+                    : null,
+                EquipmentBreakMessages = []
             };
         }
 
@@ -154,6 +156,8 @@ public static class FightService
             weapon,
             out List<Player> hitByRpgPlayers,
             out List<string> messages);
+
+        var equipmentBreakMessages = BreakEquipmentLogic(defender);
 
         if (!defender.Unit.IsAlive())
         {
@@ -173,7 +177,8 @@ public static class FightService
                 SideEffectMessage = gotInjury 
                     ? $"Вы отравились на заводе и получили {damageOfInjury} урона." +
                       (attackerDied ? " Вы умерли от последствий!" : "")
-                    : null
+                    : null,
+                EquipmentBreakMessages = equipmentBreakMessages
             };
         }
         
@@ -193,7 +198,8 @@ public static class FightService
             SideEffectMessage = gotInjury 
                 ? $"Вы отравились на заводе и получили {damageOfInjury} урона." +
                   (attackerDied ? " Вы умерли от последствий!" : "")
-                : null
+                : null,
+            EquipmentBreakMessages = equipmentBreakMessages
         };
     }
 }
