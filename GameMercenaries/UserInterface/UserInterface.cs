@@ -10,12 +10,26 @@ public static class UserInterface
 {
     public static void PrintItems(List<Item> items)
     {
-        var currentItemNumber = 0;
+        var currentItemNumber = 1;
         
         foreach (var item in items)
         {
-            currentItemNumber++;
             Console.WriteLine($"{currentItemNumber}. {item.Name} Вес: {item.Weight} кг.");
+            currentItemNumber++;
+        }    
+    }
+
+    public static void PrintWeapons(List<Weapon> weapons)
+    {
+        var current = 1;
+        
+        foreach (var weapon in weapons)
+        {
+            var minDamage = weapon.DamageRange[0];
+            var maxDamage = weapon.DamageRange[1];
+                
+            Console.WriteLine($"{current}. {weapon.Name} Дистанция: {weapon.Distance} Урон: {minDamage}-{maxDamage}");
+            current++;
         }    
     }
 
@@ -34,6 +48,40 @@ public static class UserInterface
             var unit = player.Unit;
             Console.WriteLine($"{currentPlayerNumber}. {player.UserName} ({unit.Name}) Жизни: {unit.CurrentHealth} из {unit.MaxHealth}");
         }    
+    }
+
+    public static int ChooseLocationMenu(List<Location> locations)
+    {
+        var current = 1;
+        
+        foreach (var location in locations)
+        {
+            Console.WriteLine($"{current}. {location.Name}");
+            current++;
+        }
+        
+        return locations.Count;
+    }
+
+    public static void ChoosePlayerMenu(List<Player> availablePlayers)
+    {
+        var current = 1;
+        
+        foreach (var player in availablePlayers)
+        {
+            Console.WriteLine($"{current}. {player.UserName}");
+            current++;
+        }
+    }
+
+    public static int ChooseFightTypeMenu()
+    {
+        const int actionsQuantity = 2;
+
+        Console.WriteLine("1. Атаковать врукопашную");
+        Console.WriteLine("2. Стрелять из оружия");
+
+        return actionsQuantity;
     }
 
     private static void PrintLocationGroup(string title, List<Location> locations, Player currentPlayer)
@@ -114,6 +162,8 @@ public static class UserInterface
 
         return actionsQuantity;
     }
+    
+    
     
     public static int InventoryMenu(List<Item> inventory)
     {
@@ -214,7 +264,7 @@ public static class UserInterface
         Console.WriteLine($"Текущее здоровье игрока: {handFightResult.DefenderCurrentHealth} из {handFightResult.DefenderMaxHealth}");
     }
 
-    public static void PrintGunFight(GunFightResult gunFightResult)
+    public static void PrintGunFightResult(GunFightResult gunFightResult)
     {
         Console.WriteLine(gunFightResult.Message); 
 

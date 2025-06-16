@@ -1,3 +1,4 @@
+using GameMercenaries.Constants;
 using GameMercenaries.Models.Items;
 
 namespace GameMercenaries.Models;
@@ -63,5 +64,34 @@ public class Player(
         Inventory.Remove(item);
         InventoryWeight -= item.Weight;
         Console.WriteLine($"Вы выбросили предмет {item.Name} из инвентаря");
+    }
+
+    public Weapon? ChooseWeaponForAttack()
+    {
+        var weapons = Inventory
+            .OfType<Weapon>()
+            .Where(item => item.Id != (int)ItemIdType.Knife).ToList();
+        
+        var weaponsQuantity = weapons.Count;
+
+        if (weaponsQuantity == 0)
+        {
+            Console.WriteLine("У вас в инвентаре нет оружия!");
+            return null;
+        }
+        
+        PrintWeapons(weapons);
+
+        var actionsQuantity = weaponsQuantity + 1;
+        
+        Console.WriteLine($"{actionsQuantity}. Назад");
+
+        var weaponNumber = GetNumberOfAction(actionsQuantity, "Введите номер оружия:");
+
+        if (weaponNumber == actionsQuantity) return null;
+
+        var weapon = weapons[weaponNumber - 1];
+
+        return weapon;
     }
 }

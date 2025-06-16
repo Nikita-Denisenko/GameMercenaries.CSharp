@@ -1,6 +1,8 @@
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
 using static GameMercenaries.GameLogic.EntityLogic.UnitLogic.LizardManSkills;
+using static GameMercenaries.UserInterface.UserInterface;
+using static GameMercenaries.GameLogic.FightLogic.FightService;
 
 namespace GameMercenaries.gameManagement;
 
@@ -31,5 +33,102 @@ public class CurrentGame(
         DayNumber++;
     }
     
+    private Player? ChoosePlayerToAttack(Player attacker)
+    {
+        while (true)
+        {
+            var locationsQuantity = ChooseLocationMenu(Locations);
+            var actionsQuantity = locationsQuantity + 1;
+            
+            Console.WriteLine($"{actionsQuantity}. Назад");
+            
+            var locationNumber = GetNumberOfAction(Locations.Count, "Введите номер локации:");
+        
+            if (locationNumber == actionsQuantity) return null;
+        
+            var defenderLocation = Locations[locationNumber - 1];
+            
+            var availablePlayers = defenderLocation.CurrentPlayers
+                .Where(player => player != attacker).ToList();
+
+            var quantityPlayers = availablePlayers.Count;
+            
+            if (availablePlayers.Count == 0)
+            {
+                Console.WriteLine("На этой локации нет игроков, выберите другую");
+                continue;
+            }
+            
+            ChoosePlayerMenu(availablePlayers);
+            
+            actionsQuantity = quantityPlayers + 1;
+            
+            Console.WriteLine($"{actionsQuantity}. Назад");
+            
+            var defenderNumber = GetNumberOfAction(actionsQuantity, "Введите номер игрока: ");
+            if (defenderNumber == actionsQuantity) return null;
+            
+            var defender = availablePlayers[defenderNumber - 1];
+
+            return defender;
+        }
+    }
+
+    public int? ChooseFightType()
+    {
+        var fightTypesQuantity = ChooseFightTypeMenu();
+
+        var actionsQuantity = fightTypesQuantity + 1;
+        
+        Console.WriteLine($"{actionsQuantity}. Назад");
+
+        var fightNumber = GetNumberOfAction(actionsQuantity, "Введите номер действия:");
+
+        if (fightNumber == actionsQuantity) return null;
+
+        return fightNumber;
+    }
+
+    public void FightMenuLogic(Player attacker)
+    {
+        while (true)
+        {
+            var defender = ChoosePlayerToAttack(attacker);
+
+            if (defender is null) return;
+
+            var fightNumber = ChooseFightType();
+
+            if (fightNumber is null) continue;
+
+            switch (fightNumber)
+            {
+                case 1:
+                    var handFightResult = HandFight(attacker, defender);
+                    PrintHandFightResult(handFightResult);
+                    break;
+                case 2:
+                    var weapon = attacker.ChooseWeaponForAttack();
+                    if (weapon is null) continue;
+                    var gunFightResult = GunFight(attacker, defender, weapon);
+                    PrintGunFightResult(gunFightResult);
+                    break;
+            }
+        }
+    }
     
+    public void MapMenuLogic(Player player)
+    {
+       var quantityActions = MapMenu(player);
+       var numberOfAction = GetNumberOfAction(quantityActions, "Введите номер действия:");
+       
+       if (numberOfAction == quantityActions) return;
+
+       FightMenuLogic(player);
+    }
+
+    public void MainMenuLogic()
+    {
+        
+    }
 }
