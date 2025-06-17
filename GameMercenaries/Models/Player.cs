@@ -66,6 +66,26 @@ public class Player(
         Console.WriteLine($"Вы выбросили предмет {item.Name} из инвентаря");
     }
 
+    public void UseMedKit()
+    {
+        var medKit = Inventory
+            .OfType<HealthKit>()
+            .FirstOrDefault(item => item.Id == (int)ItemIdType.Medkit);
+
+        if (medKit is null)
+        {
+            Console.WriteLine("В вашем инвентаре нет аптечки!"); 
+            return;
+        }
+
+        var hpBonus = medKit.HpBonus;
+        
+        Unit.RestoreHealth(hpBonus);
+
+        Console.WriteLine($"Вы восстановили {hpBonus} здоровья.");
+        Console.WriteLine($"Ваше текущее здоровье {Unit.CurrentHealth} из {Unit.MaxHealth}");
+    }
+
     public Weapon? ChooseWeaponForAttack()
     {
         var weapons = Inventory

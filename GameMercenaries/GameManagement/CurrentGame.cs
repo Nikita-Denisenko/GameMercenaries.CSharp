@@ -9,7 +9,7 @@ namespace GameMercenaries.gameManagement;
 public class CurrentGame(
     List<Player> players)
 {
-    public List<Location> Locations { get; } = GameData.Locations;
+    private List<Location> Locations { get; } = GameData.Locations;
     public List<Unit> Units { get; } = GameData.Units;
     public List<Item> Items { get; } =  GameData.Items;
     public int DayNumber { get; private set; } = 0;
@@ -74,7 +74,7 @@ public class CurrentGame(
         }
     }
 
-    public int? ChooseFightType()
+    private static int? ChooseFightType()
     {
         var fightTypesQuantity = ChooseFightTypeMenu();
 
@@ -89,7 +89,7 @@ public class CurrentGame(
         return fightNumber;
     }
 
-    public void FightMenuLogic(Player attacker)
+    private void FightMenuLogic(Player attacker)
     {
         while (true)
         {
@@ -125,6 +125,62 @@ public class CurrentGame(
        if (numberOfAction == quantityActions) return;
 
        FightMenuLogic(player);
+    }
+    
+    public void InventoryMenuLogic(Player player)
+    {
+        var options = GetInventoryMenuOptions(player.Inventory)
+            .OrderBy(pair => pair.Key).ToDictionary();
+
+        foreach (var (key, value) in options)
+        {
+            Console.WriteLine($"{key}. {value}");
+        }
+
+        var numberOfAction = GetNumberOfAction(options.Count, "Введите номер действия: ");
+
+        var action = options[numberOfAction];
+
+        switch (action)
+        {
+            case "Назад":
+                return;
+            case "Выбросить предмет":
+                player.RemoveItem();
+                break;
+            case "Использовать аптечку":
+                player.UseMedKit();
+                break;
+        }
+    }
+
+    public static void LocationMenuLogic(Player player)
+    {
+        var actionsQuantity = LocationMenu(player);
+
+        var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
+
+        if (actionsQuantity == numberOfAction) return;
+        
+        player.FindItem();
+    }
+
+    public static void UnitMenuLogic(Player player)
+    {
+        var actionsQuantity = UnitMenu(player);
+
+        var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
+        
+        if (actionsQuantity == numberOfAction) return;
+        
+        player.UseMedKit();
+    }
+
+    public void EventsMenuLogic()
+    {
+        var actionsQuantity = EventsMenu(GameEvents);
+        
+        GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
     }
 
     public void MainMenuLogic()

@@ -1,6 +1,6 @@
 using GameMercenaries.Models;
 
-namespace GameMercenaries.GameLogic;
+namespace GameMercenaries.GameLogic.EntityLogic;
 
 using gameManagement;
 

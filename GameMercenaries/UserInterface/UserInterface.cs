@@ -163,39 +163,36 @@ public static class UserInterface
         return actionsQuantity;
     }
     
-    
-    
-    public static int InventoryMenu(List<Item> inventory)
+    public static Dictionary<int, string> GetInventoryMenuOptions(List<Item> inventory)
     {
-        const int actionsQuantity = 1;
-        
+        var options = new Dictionary<int, string>();
+        var optionNumber = 1;
+
         if (inventory.Count == 0)
         {
             Console.WriteLine("В вашем инвентаре нет предметов.");
             Console.WriteLine();
-            Console.WriteLine("1. Назад");
-            
-            return actionsQuantity;
+            options[optionNumber] = "Назад";
+            return options;
         }
-        
+
         Console.WriteLine("Ваши предметы:");
         PrintItems(inventory);
         Console.WriteLine();
-        
-        Console.WriteLine("1. Выбросить предмет");
-        
+
+        options[optionNumber++] = "Выбросить предмет";
+
         var hasMedkit = inventory.Any(item => (ItemIdType)item.Id == ItemIdType.Medkit);
-        
-        if (!hasMedkit)
+        if (hasMedkit)
         {
-            Console.WriteLine("2. Назад");
-            return actionsQuantity + 1;
+            options[optionNumber++] = "Использовать аптечку";
         }
-        Console.WriteLine("2. Использовать аптечку");
-        Console.WriteLine("3. Назад");
-        
-        return actionsQuantity + 2;
+
+        options[optionNumber] = "Назад";
+
+        return options;
     }
+
     
     public static int LocationMenu(Player player)
     {
@@ -219,11 +216,11 @@ public static class UserInterface
         return actionsQuantity + 1;
     }
 
-    public static int UnitMenu(Unit unit)
+    public static int UnitMenu(Player player)
     {
         const int actionsQuantity = 2;
         
-        unit.PrintInfo();
+        player.Unit.PrintInfo();
         Console.WriteLine();
         
         Console.WriteLine("1. Восстановить здоровье");
