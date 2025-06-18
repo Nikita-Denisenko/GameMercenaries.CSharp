@@ -1,8 +1,10 @@
+using GameMercenaries.Constants;
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
 using static GameMercenaries.GameLogic.EntityLogic.UnitLogic.LizardManSkills;
 using static GameMercenaries.UserInterface.UserInterface;
 using static GameMercenaries.GameLogic.FightLogic.FightService;
+using static GameMercenaries.GameLogic.EntityLogic.UnitLogic.ChameleonManSkills;
 
 namespace GameMercenaries.gameManagement;
 
@@ -12,7 +14,7 @@ public class CurrentGame(
     private List<Location> Locations { get; } = GameData.Locations;
     public List<Unit> Units { get; } = GameData.Units;
     public List<Item> Items { get; } =  GameData.Items;
-    public int DayNumber { get; private set; } = 0;
+    public int DayNumber { get; private set; }
     public List<Player> AllPlayers { get; } = players;
     public List<Player> AlivePlayers { get; } = players;
     public List<string> GameEvents { get; } = [];
@@ -117,17 +119,20 @@ public class CurrentGame(
         }
     }
     
-    public void MapMenuLogic(Player player)
+    private bool MapMenuLogic(Player player)
     {
        var quantityActions = MapMenu(player);
        var numberOfAction = GetNumberOfAction(quantityActions, "Введите номер действия:");
-       
-       if (numberOfAction == quantityActions) return;
 
-       FightMenuLogic(player);
+       if (numberOfAction != quantityActions)
+       {
+           FightMenuLogic(player);
+       }
+       
+       return true;
     }
     
-    public void InventoryMenuLogic(Player player)
+    private bool InventoryMenuLogic(Player player)
     {
         var options = GetInventoryMenuOptions(player.Inventory)
             .OrderBy(pair => pair.Key).ToDictionary();
@@ -144,7 +149,7 @@ public class CurrentGame(
         switch (action)
         {
             case "Назад":
-                return;
+                break;
             case "Выбросить предмет":
                 player.RemoveItem();
                 break;
@@ -152,39 +157,80 @@ public class CurrentGame(
                 player.UseMedKit();
                 break;
         }
+
+        return true;
     }
 
-    public static void LocationMenuLogic(Player player)
+    private static bool LocationMenuLogic(Player player)
     {
         var actionsQuantity = LocationMenu(player);
 
         var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
 
-        if (actionsQuantity == numberOfAction) return;
+        if (actionsQuantity == numberOfAction) return true;
         
         player.FindItem();
+
+        return true;
     }
 
-    public static void UnitMenuLogic(Player player)
+    private static bool UnitMenuLogic(Player player)
     {
         var actionsQuantity = UnitMenu(player);
 
         var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
         
-        if (actionsQuantity == numberOfAction) return;
+        if (actionsQuantity == numberOfAction) return true;
         
         player.UseMedKit();
+        
+        return true;
     }
 
-    public void EventsMenuLogic()
+    private bool EventsMenuLogic()
     {
         var actionsQuantity = EventsMenu(GameEvents);
         
         GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
+
+        return true;
     }
 
-    public void MainMenuLogic()
+    private static bool FinishDayForPlayer(Player player)
     {
-        
+        player.ChangeLocation();
+        return false;
+    }
+
+    public void MainMenuLogic(Player player)
+    {
+        while (true)
+        {
+            var index = 0;
+            
+            var menuOptions = new Dictionary<int, Func<bool>>()
+            {
+                [++index] = () => MapMenuLogic(player),
+                [++index] = () => InventoryMenuLogic(player),
+                [++index] = () => LocationMenuLogic(player),
+                [++index] = () => UnitMenuLogic(player),
+                [++index] = EventsMenuLogic,
+                [++index] = () => FinishDayForPlayer(player)
+            };
+
+            PrintMoveActionsMenu();
+
+            if ((UnitIdType)player.Unit.Id == UnitIdType.ChameleonMan)
+            {
+                Console.WriteLine($"{++index}. Украсть предмет у игрока");
+                menuOptions[index] = () => ChameleonManLogic(player, AlivePlayers);
+            }
+            
+            var actionsQuantity = menuOptions.Count;
+
+            var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия:");
+
+            if (!menuOptions[numberOfAction]()) return;
+        }
     }
 }

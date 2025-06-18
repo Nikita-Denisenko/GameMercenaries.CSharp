@@ -62,21 +62,23 @@ public static class ChameleonManSkills
         return item;
     }
     
-    public static void ChameleonManLogic(Player chameleon, List<Player> players)
+    public static bool ChameleonManLogic(Player chameleon, List<Player> players)
     {
        var enemy = ChooseTargetPlayer(chameleon, players);
-       if (enemy is null) return;
+       if (enemy is null) return true;
 
        var enemyInventory = enemy.Inventory;
        
        var item = ChooseItemToSteal(chameleon, enemyInventory);
 
-       if (item is null) return;
+       if (item is null) return true;
        
        chameleon.TakeItem(item);
        enemyInventory.Remove(item);
         
        Console.WriteLine($"Вы украли предмет {item.Name} у игрока {enemy.UserName}!");
        Console.WriteLine($"Вес вашего инвентаря: {chameleon.InventoryWeight} кг.");
+
+       return true;
     }
 }

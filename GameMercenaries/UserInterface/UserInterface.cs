@@ -121,18 +121,14 @@ public static class UserInterface
         }
     }
     
-    public static int MoveActionsMenu()
+    public static void PrintMoveActionsMenu()
     {
-        const int actionsQuantity = 6;
-        
         Console.WriteLine("1. Карта");
         Console.WriteLine("2. Инвентарь");
         Console.WriteLine("3. Осмотреть локацию");
         Console.WriteLine("4. Мой юнит");
         Console.WriteLine("5. События");
         Console.WriteLine("6. Покинуть локацию и завершить день.");
-
-        return actionsQuantity;
     }
     
     public static int MapMenu(Player currentPlayer)
