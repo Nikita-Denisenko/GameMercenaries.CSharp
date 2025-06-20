@@ -17,17 +17,12 @@ public class CurrentGame(
     public int DayNumber { get; private set; }
     public List<Player> AllPlayers { get; } = players;
     public List<Player> AlivePlayers { get; } = players;
-    public List<string> GameEvents { get; } = [];
+    
+    public List<Event> Events { get; private set; } = [];
 
-    public void KillPlayer(Player player)
-    {
-        AlivePlayers.Remove(player);
-    }
+    public void KillPlayer(Player player) => AlivePlayers.Remove(player);
 
-    public void AddEvent(string eventText)
-    {
-        GameEvents.Add(eventText);
-    }
+    public void AddEvent(Event gameEvent) => Events.Add(gameEvent);
 
     public void FinishDay()
     {
@@ -189,7 +184,7 @@ public class CurrentGame(
 
     private bool EventsMenuLogic()
     {
-        var actionsQuantity = EventsMenu(GameEvents);
+        var actionsQuantity = EventsMenu(Events, DayNumber);
         
         GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
 
@@ -204,6 +199,8 @@ public class CurrentGame(
 
     public void MainMenuLogic(Player player)
     {
+        PrintPlayerEvents(player);
+        
         while (true)
         {
             var index = 0;
@@ -217,7 +214,7 @@ public class CurrentGame(
                 [++index] = EventsMenuLogic,
                 [++index] = () => FinishDayForPlayer(player)
             };
-
+            
             PrintMoveActionsMenu();
 
             if ((UnitIdType)player.Unit.Id == UnitIdType.ChameleonMan)

@@ -17,10 +17,11 @@ public class Player(
     public Unit Unit { get; } = unit;
     public Location Location { get; private set; } = GenerateStartLocation();
     public Item ItemOnLocation { get; private set; } = GenerateStartItem();
-    public bool ItemWasTaken { get; private set; } = false;
+    public bool ItemWasTaken { get; private set; }
     public List<Item> Inventory { get; } = [];
     public int InventoryWeight { get; private set; }
     public HashSet<Artefact> Artefacts { get; private set; } = [];
+    public List<Event> Events { get; private set; } = [];
     
     public void ChangeLocation()
     {
@@ -29,10 +30,9 @@ public class Player(
         ItemWasTaken = false;
     }
 
-    public bool CanTakeItem(Item item)
-    {
-        return Unit.Weight >= InventoryWeight + item.Weight;
-    }
+    public void AddEvent(Event playerEvent) => Events.Add(playerEvent);
+    
+    public bool CanTakeItem(Item item) => Unit.Weight >= InventoryWeight + item.Weight;
     
     public void TakeItem(Item item)
     {

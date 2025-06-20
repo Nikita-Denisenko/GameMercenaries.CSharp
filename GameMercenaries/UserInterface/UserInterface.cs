@@ -224,24 +224,51 @@ public static class UserInterface
 
         return actionsQuantity;
     }
-    
-    public static int EventsMenu(List<string> gameEvents)
+
+    public static void PrintPlayerEvents(Player player)
     {
-        const int actionsQuantity = 1;
+        if (player.Events.Count == 0) return;
         
-        if (gameEvents.Count == 0)
-        {
-            Console.WriteLine("Список событий пуст");
-            Console.WriteLine("1. Назад");
-            return actionsQuantity;
-        }
+        Console.WriteLine("Внимание!");
         
-        for (var i = gameEvents.Count - 1; i >= 0; i--)
+        foreach (var currentEvent in player.Events)
         {
-            Console.WriteLine(gameEvents[i]);
+            Console.WriteLine(currentEvent.Message);
         }
         
         Console.WriteLine();
+    }
+
+    public static void PrintGameEvents(List<Event> events, bool isCurrentDay)
+    {
+        Console.WriteLine(isCurrentDay ? "Текущий день" : "Прошлый день");
+        
+        if (events.Count == 0)
+        {
+            Console.WriteLine("Список событий пуст");
+            return;
+        }
+        
+        foreach (var currentEvent in events)
+        {
+            Console.WriteLine(currentEvent.Message);
+        }
+        
+        Console.WriteLine();
+    }
+    
+    public static int EventsMenu(List<Event> events, int dayNumber)
+    {
+        const int actionsQuantity = 1;
+
+        var currentDayEvents = events
+            .Where(gameEvent => gameEvent.DayNumber == dayNumber).ToList();
+        
+        var lastDayEvents = events
+            .Where(gameEvent => gameEvent.DayNumber == dayNumber - 1).ToList();
+        
+        PrintGameEvents(currentDayEvents, true);
+        PrintGameEvents(lastDayEvents, false);
         
         Console.WriteLine("1. Назад");
         return actionsQuantity;
