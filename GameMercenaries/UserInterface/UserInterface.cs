@@ -227,11 +227,11 @@ public static class UserInterface
 
     public static void PrintPlayerEvents(Player player)
     {
-        if (player.Events.Count == 0) return;
+        if (player.History.Count == 0) return;
         
         Console.WriteLine("Внимание!");
         
-        foreach (var currentEvent in player.Events)
+        foreach (var currentEvent in player.History)
         {
             Console.WriteLine(currentEvent.Message);
         }
@@ -239,7 +239,7 @@ public static class UserInterface
         Console.WriteLine();
     }
 
-    public static void PrintGameEvents(List<Event> events, bool isCurrentDay)
+    public static void PrintGameEvents(List<GameEvent> events, bool isCurrentDay)
     {
         Console.WriteLine(isCurrentDay ? "Текущий день" : "Прошлый день");
         
@@ -257,15 +257,15 @@ public static class UserInterface
         Console.WriteLine();
     }
     
-    public static int EventsMenu(List<Event> events, int dayNumber)
+    public static int EventsMenu(List<GameEvent> events, int dayNumber)
     {
         const int actionsQuantity = 1;
 
         var currentDayEvents = events
-            .Where(gameEvent => gameEvent.DayNumber == dayNumber).ToList();
+            .Where(gameEvent => gameEvent.Day == dayNumber).ToList();
         
         var lastDayEvents = events
-            .Where(gameEvent => gameEvent.DayNumber == dayNumber - 1).ToList();
+            .Where(gameEvent => gameEvent.Day == dayNumber - 1).ToList();
         
         PrintGameEvents(currentDayEvents, true);
         PrintGameEvents(lastDayEvents, false);

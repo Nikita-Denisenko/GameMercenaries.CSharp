@@ -2,9 +2,9 @@ using GameMercenaries.Constants;
 
 namespace GameMercenaries.Models;
 
-public class Event
+public class GameEvent
 {
-    public int DayNumber { get; init; }
+    public int Day { get; init; }
     public EventType Type { get; init; }
     public required string Message { get; init; }
 }

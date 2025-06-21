@@ -21,7 +21,7 @@ public class Player(
     public List<Item> Inventory { get; } = [];
     public int InventoryWeight { get; private set; }
     public HashSet<Artefact> Artefacts { get; private set; } = [];
-    public List<Event> Events { get; private set; } = [];
+    public List<GameEvent> History { get; private set; } = [];
     
     public void ChangeLocation()
     {
@@ -30,12 +30,17 @@ public class Player(
         ItemWasTaken = false;
     }
 
-    public void AddEvent(Event playerEvent) => Events.Add(playerEvent);
+    public void AddEvent(GameEvent playerGameEvent) => History.Add(playerGameEvent);
     
     public bool CanTakeItem(Item item) => Unit.Weight >= InventoryWeight + item.Weight;
     
     public void TakeItem(Item item)
     {
+        if (item.ItemType == "Артефакт")
+        {
+            Artefacts.Add((Artefact)item);
+        }
+        
         Inventory.Add(item);
         InventoryWeight += item.Weight;
     }

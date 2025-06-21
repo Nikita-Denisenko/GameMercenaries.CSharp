@@ -7,5 +7,6 @@ public enum EventType
     ItemFound,
     ArtefactFound,
     Heal,
-    ItemStolen
+    ItemStolen,
+    LocationChanged
 }

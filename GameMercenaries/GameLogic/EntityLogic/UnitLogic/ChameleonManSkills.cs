@@ -1,3 +1,4 @@
+using GameMercenaries.Constants;
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
 using static GameMercenaries.UserInterface.UserInterface;
@@ -10,7 +11,8 @@ public static class ChameleonManSkills
     private static Player? ChooseTargetPlayer(Player chameleon, List<Player> players)
     {
         var availablePlayers = players
-            .Where(player => player.Location == chameleon.Location && player != chameleon).ToList();
+            .Where(player => player.Location == chameleon.Location && player != chameleon && player.Inventory.Count > 0)
+            .ToList();
 
         var playersQuantity = availablePlayers.Count;
         
@@ -30,13 +32,7 @@ public static class ChameleonManSkills
         if (playerNumber == actionsQuantity) return null;
         
         var enemy = availablePlayers[playerNumber - 1];
-
-        if (enemy.Inventory.Count == 0)
-        {
-            Console.WriteLine("Инвентарь этого игрока пуст выберите другого!");
-            return null;
-        }
-
+        
         return enemy;
     }
 
@@ -62,7 +58,11 @@ public static class ChameleonManSkills
         return item;
     }
     
-    public static bool ChameleonManLogic(Player chameleon, List<Player> players)
+    public static bool ChameleonManLogic(
+        Player chameleon, 
+        List<Player> players, 
+        int dayNumber,
+        Action<GameEvent> onGameEvent)
     {
        var enemy = ChooseTargetPlayer(chameleon, players);
        if (enemy is null) return true;
@@ -79,6 +79,23 @@ public static class ChameleonManSkills
        Console.WriteLine($"Вы украли предмет {item.Name} у игрока {enemy.UserName}!");
        Console.WriteLine($"Вес вашего инвентаря: {chameleon.InventoryWeight} кг.");
 
+       var newGameEvent = new GameEvent
+       {
+           Day = dayNumber,
+           Type = EventType.ItemStolen,
+           Message = $"Игрок {chameleon.UserName} украл предмет {item.Name} у игрока {enemy.UserName}!"
+       };
+       
+       var newPlayerGameEvent = new GameEvent
+       {
+           Day = dayNumber,
+           Type = EventType.ItemStolen,
+           Message = $"Игрок {chameleon.UserName} украл у вас предмет {item.Name}!"
+       };
+
+       onGameEvent(newGameEvent);
+       enemy.AddEvent(newPlayerGameEvent);
+       
        return true;
     }
 }

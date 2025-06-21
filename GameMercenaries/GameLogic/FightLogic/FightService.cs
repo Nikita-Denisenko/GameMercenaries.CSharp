@@ -1,3 +1,5 @@
+using GameMercenaries.Constants;
+
 namespace GameMercenaries.GameLogic.FightLogic;
 
 using Models;
@@ -8,7 +10,11 @@ using static SideEffectsLogic;
 
 public static class FightService
 {
-    public static HandFightResult HandFight(Player attacker, Player defender)
+    public static HandFightResult HandFight(
+        Player attacker, 
+        Player defender,
+        int dayNumber,
+        Action<GameEvent> onGameEvent)
     {
         if (!PlayersCanHandfight(attacker, defender)) 
         {
@@ -42,9 +48,29 @@ public static class FightService
         var damage = CalculateHandDamage(attacker.Unit, attacker.Inventory);
         
         defender.Unit.TakeDamage(damage);
+
+        GameEvent newGameEvent;
+        GameEvent newPlayerGameEvent;
         
         if (!defender.Unit.IsAlive())
         {
+            newGameEvent = new GameEvent
+            {
+                Day = dayNumber,
+                Type = EventType.Death,
+                Message = $"Игрок {defender.UserName} был убит игроком {attacker.UserName} в рукопашном бою!"
+            };
+
+            newPlayerGameEvent = new GameEvent
+            {
+                Day = dayNumber,
+                Type = EventType.Death,
+                Message = $"Вас убил игрок {attacker.UserName} в рукопашном бою!"
+            };
+
+            onGameEvent(newGameEvent);
+            defender.AddEvent(newPlayerGameEvent);
+            
             return new HandFightResult
             {
                 WasSuccessful = true,
@@ -55,7 +81,24 @@ public static class FightService
                 Message = $"Вы убили игрока {defender.UserName}!"
             };
         }
+        
+        newGameEvent = new GameEvent
+        {
+            Day = dayNumber,
+            Type = EventType.Attack,
+            Message = $"Игрок {defender.UserName} был атакован игроком {attacker.UserName} в рукопашную и потерял {damage} жизней!"
+        };
 
+        newPlayerGameEvent = new GameEvent
+        {
+            Day = dayNumber,
+            Type = EventType.Attack,
+            Message = $"Вас атаковал игрок {attacker.UserName} в рукопашном бою! Вы потеряли {damage} жизней!"
+        };
+
+        onGameEvent(newGameEvent);
+        defender.AddEvent(newPlayerGameEvent);
+        
         return new HandFightResult
         {
             WasSuccessful = true,
@@ -67,7 +110,13 @@ public static class FightService
         };
     }
 
-    public static GunFightResult GunFight(Player attacker, Player defender, Weapon weapon)
+    public static GunFightResult GunFight(
+        Player attacker, 
+        Player defender, 
+        Weapon weapon,
+        int dayNumber,
+        Action<GameEvent> onGameEvent
+        )
     {
         var distance = CalculateDistance(attacker.Location, defender.Location);
         
@@ -159,8 +208,28 @@ public static class FightService
 
         var equipmentBreakMessages = BreakEquipmentLogic(defender);
 
+        GameEvent newGameEvent;
+        GameEvent newPlayerGameEvent;
+        
         if (!defender.Unit.IsAlive())
         {
+            newGameEvent = new GameEvent
+            {
+                Day = dayNumber,
+                Type = EventType.Death,
+                Message = $"Игрок {defender.UserName} был убит игроком {attacker.UserName} из оружия {weapon.Name}!"
+            };
+
+            newPlayerGameEvent = new GameEvent
+            {
+                Day = dayNumber,
+                Type = EventType.Death,
+                Message = $"Вас убил игрок {attacker.UserName} из оружия {weapon.Name}!"
+            };
+            
+            onGameEvent(newGameEvent);
+            defender.AddEvent(newPlayerGameEvent);
+            
             return new GunFightResult
             {
                 WasSuccessful = true,
@@ -181,6 +250,23 @@ public static class FightService
                 EquipmentBreakMessages = equipmentBreakMessages
             };
         }
+        
+        newGameEvent = new GameEvent
+        {
+            Day = dayNumber,
+            Type = EventType.Attack,
+            Message = $"Игрок {defender.UserName} был атакован игроком {attacker.UserName} из оружия {weapon.Name} и потерял {damage} жизней!"
+        };
+
+        newPlayerGameEvent = new GameEvent
+        {
+            Day = dayNumber,
+            Type = EventType.Attack,
+            Message = $"Вас атаковал игрок {attacker.UserName} из оружия {weapon.Name}! Вы потеряли {damage} жизней!"
+        };
+        
+        onGameEvent(newGameEvent);
+        defender.AddEvent(newPlayerGameEvent);
         
         return new GunFightResult
         {

@@ -18,11 +18,11 @@ public class CurrentGame(
     public List<Player> AllPlayers { get; } = players;
     public List<Player> AlivePlayers { get; } = players;
     
-    public List<Event> Events { get; private set; } = [];
+    public List<GameEvent> History { get; } = [];
 
     public void KillPlayer(Player player) => AlivePlayers.Remove(player);
 
-    public void AddEvent(Event gameEvent) => Events.Add(gameEvent);
+    public void AddEvent(GameEvent gameGameEvent) => History.Add(gameGameEvent);
 
     public void FinishDay()
     {
@@ -101,14 +101,31 @@ public class CurrentGame(
             switch (fightNumber)
             {
                 case 1:
-                    var handFightResult = HandFight(attacker, defender);
+                    var handFightResult = HandFight(
+                        attacker, 
+                        defender, 
+                        DayNumber,
+                        gameEvent => History.Add(gameEvent)
+                        );
+                    
                     PrintHandFightResult(handFightResult);
+                   
                     break;
+               
                 case 2:
                     var weapon = attacker.ChooseWeaponForAttack();
+                    
                     if (weapon is null) continue;
-                    var gunFightResult = GunFight(attacker, defender, weapon);
+                   
+                    var gunFightResult = GunFight(
+                        attacker, 
+                        defender, 
+                        weapon, 
+                        DayNumber,
+                        gameEvent => History.Add(gameEvent));
+                    
                     PrintGunFightResult(gunFightResult);
+                    
                     break;
             }
         }
@@ -150,26 +167,61 @@ public class CurrentGame(
                 break;
             case "Использовать аптечку":
                 player.UseMedKit();
+                var unit = player.Unit;
+                var newGameEvent = new GameEvent
+                {
+                    Day = DayNumber,
+                    Type = EventType.Heal,
+                    Message = $"Игрок {player.UserName} использовал аптечку! Его здоровье {unit.CurrentHealth} из {unit.MaxHealth}"
+                };
+                AddEvent(newGameEvent);
                 break;
         }
 
         return true;
     }
 
-    private static bool LocationMenuLogic(Player player)
+    private bool LocationMenuLogic(Player player)
     {
         var actionsQuantity = LocationMenu(player);
 
         var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
 
         if (actionsQuantity == numberOfAction) return true;
+
+        var item = player.ItemOnLocation;
         
         player.FindItem();
 
+        GameEvent newGameEvent;
+        
+        if (item.ItemType == "Артефакт")
+        {
+            newGameEvent = new GameEvent
+            {
+                Day = DayNumber,
+                Type = EventType.ArtefactFound,
+                Message = $"Игрок {player.UserName} взял Артефакт {item.Name}!"
+            };
+            
+            AddEvent(newGameEvent);
+        
+            return true;
+        }
+        
+        newGameEvent = new GameEvent
+        {
+            Day = DayNumber,
+            Type = EventType.ItemFound,
+            Message = $"Игрок {player.UserName} взял предмет {item.Name}"
+        };
+        
+        AddEvent(newGameEvent);
+        
         return true;
     }
 
-    private static bool UnitMenuLogic(Player player)
+    private bool UnitMenuLogic(Player player)
     {
         var actionsQuantity = UnitMenu(player);
 
@@ -178,22 +230,48 @@ public class CurrentGame(
         if (actionsQuantity == numberOfAction) return true;
         
         player.UseMedKit();
+        var unit = player.Unit;
         
+        var newGameEvent = new GameEvent
+        {
+            Day = DayNumber,
+            Type = EventType.Heal,
+            Message = $"Игрок {player.UserName} использовал аптечку! Его здоровье {unit.CurrentHealth} из {unit.MaxHealth}"
+        };
+        AddEvent(newGameEvent);
         return true;
     }
 
     private bool EventsMenuLogic()
     {
-        var actionsQuantity = EventsMenu(Events, DayNumber);
+        var actionsQuantity = EventsMenu(History, DayNumber);
         
         GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
 
         return true;
     }
 
-    private static bool FinishDayForPlayer(Player player)
+    private bool FinishDayForPlayer(Player player)
     {
         player.ChangeLocation();
+
+        var newGameEvent = new GameEvent
+        {
+            Day = DayNumber,
+            Type = EventType.LocationChanged,
+            Message = $"Игрок {player.UserName} переместился в локацию {player.Location.Name}"
+        };
+
+        var newPlayerGameEvent = new GameEvent
+        {
+            Day = DayNumber,
+            Type = EventType.LocationChanged,
+            Message = $"Вы переместились в локацию {player.Location.Name}"
+        };
+        
+        AddEvent(newGameEvent);
+        player.AddEvent(newPlayerGameEvent);
+        
         return false;
     }
 
@@ -220,7 +298,12 @@ public class CurrentGame(
             if ((UnitIdType)player.Unit.Id == UnitIdType.ChameleonMan)
             {
                 Console.WriteLine($"{++index}. Украсть предмет у игрока");
-                menuOptions[index] = () => ChameleonManLogic(player, AlivePlayers);
+                menuOptions[index] = () => ChameleonManLogic(
+                    player, 
+                    AlivePlayers, 
+                    DayNumber, 
+                    gameEvent => History.Add(gameEvent)
+                    );
             }
             
             var actionsQuantity = menuOptions.Count;
