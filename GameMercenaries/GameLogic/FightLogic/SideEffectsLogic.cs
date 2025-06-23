@@ -3,7 +3,8 @@ using GameMercenaries.gameManagement;
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
 using static GameMercenaries.GameLogic.FightLogic.FightHelpers;
-using static GameMercenaries.UserInterface.UserInterface;
+using static GameMercenaries.UserInterface.MenuUi;
+using static GameMercenaries.UserInterface.UiHelpers;
 
 namespace GameMercenaries.GameLogic.FightLogic;
 

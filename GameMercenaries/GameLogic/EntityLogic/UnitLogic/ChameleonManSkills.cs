@@ -1,7 +1,8 @@
 using GameMercenaries.Constants;
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
-using static GameMercenaries.UserInterface.UserInterface;
+using static GameMercenaries.UserInterface.MenuUi;
+using static GameMercenaries.UserInterface.UiHelpers;
 
 namespace GameMercenaries.GameLogic.EntityLogic.UnitLogic;
 

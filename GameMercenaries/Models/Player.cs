@@ -4,8 +4,9 @@ using GameMercenaries.Models.Items;
 namespace GameMercenaries.Models;
 
 using static GameLogic.LocationsLogic;
-using static UserInterface.UserInterface;
+using static UserInterface.MenuUi;
 using static GameLogic.ItemLogic;
+using static UserInterface.UiHelpers;
 
 
 public class Player(

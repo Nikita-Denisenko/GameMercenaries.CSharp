@@ -2,7 +2,8 @@ using GameMercenaries.Constants;
 using GameMercenaries.Models;
 using GameMercenaries.Models.Items;
 using static GameMercenaries.GameLogic.EntityLogic.UnitLogic.LizardManSkills;
-using static GameMercenaries.UserInterface.UserInterface;
+using static GameMercenaries.UserInterface.MenuUi;
+using static GameMercenaries.UserInterface.UiHelpers;
 using static GameMercenaries.GameLogic.FightLogic.FightService;
 using static GameMercenaries.GameLogic.EntityLogic.UnitLogic.ChameleonManSkills;
 
