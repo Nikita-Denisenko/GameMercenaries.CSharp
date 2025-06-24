@@ -65,38 +65,47 @@ public static class ChameleonManSkills
         int dayNumber,
         Action<GameEvent> onGameEvent)
     {
-       var enemy = ChooseTargetPlayer(chameleon, players);
-       if (enemy is null) return true;
+        const int actionCost = 1;
 
-       var enemyInventory = enemy.Inventory;
-       
-       var item = ChooseItemToSteal(chameleon, enemyInventory);
+        if (chameleon.Unit.CurrentActions < actionCost)
+        {
+            Console.WriteLine("У вас недостаточно действий. Дождитесь следующего хода.");
+            return true;
+        }
+                
+        var enemy = ChooseTargetPlayer(chameleon, players);
+        if (enemy is null) return true;
 
-       if (item is null) return true;
+        var enemyInventory = enemy.Inventory;
        
-       chameleon.TakeItem(item);
-       enemyInventory.Remove(item);
+        var item = ChooseItemToSteal(chameleon, enemyInventory);
+
+        if (item is null) return true;
+       
+        chameleon.Unit.UseActions(actionCost);
+        chameleon.TakeItem(item);
+        enemyInventory.Remove(item);
         
-       Console.WriteLine($"Вы украли предмет {item.Name} у игрока {enemy.UserName}!");
-       Console.WriteLine($"Вес вашего инвентаря: {chameleon.InventoryWeight} кг.");
+        Console.WriteLine($"Вы украли предмет {item.Name} у игрока {enemy.UserName}!");
+        Console.WriteLine($"Вес вашего инвентаря: {chameleon.InventoryWeight} кг.");
 
-       var newGameEvent = new GameEvent
-       {
-           Day = dayNumber,
-           Type = EventType.ItemStolen,
-           Message = $"Игрок {chameleon.UserName} украл предмет {item.Name} у игрока {enemy.UserName}!"
-       };
+        var newGameEvent = new GameEvent
+        {
+            Day = dayNumber,
+            Type = EventType.ItemStolen,
+            Message = $"Игрок {chameleon.UserName} украл предмет {item.Name} у игрока {enemy.UserName}!"
+        };
        
-       var newPlayerGameEvent = new GameEvent
-       {
-           Day = dayNumber,
-           Type = EventType.ItemStolen,
-           Message = $"Игрок {chameleon.UserName} украл у вас предмет {item.Name}!"
-       };
+        var newPlayerGameEvent = new GameEvent
+        {
+            Day = dayNumber,
+            Type = EventType.ItemStolen,
+            Message = $"Игрок {chameleon.UserName} украл у вас предмет {item.Name}!"
+        };
 
-       onGameEvent(newGameEvent);
-       enemy.AddEvent(newPlayerGameEvent);
+        onGameEvent(newGameEvent);
+        enemy.AddEvent(newPlayerGameEvent);
        
-       return true;
+        return true;
     }
 }

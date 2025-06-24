@@ -4,7 +4,6 @@ using GameMercenaries.Models.Items;
 namespace GameMercenaries.Models;
 
 using static GameLogic.LocationsLogic;
-using static UserInterface.MenuUi;
 using static GameLogic.ItemLogic;
 using static UserInterface.UiHelpers;
 
@@ -21,8 +20,8 @@ public class Player(
     public bool ItemWasTaken { get; private set; }
     public List<Item> Inventory { get; } = [];
     public int InventoryWeight { get; private set; }
-    public HashSet<Artefact> Artefacts { get; private set; } = [];
-    public List<GameEvent> History { get; private set; } = [];
+    public HashSet<Artefact> Artefacts { get; } = [];
+    public List<GameEvent> History { get; } = [];
     
     public void ChangeLocation()
     {
@@ -119,5 +118,10 @@ public class Player(
         var weapon = weapons[weaponNumber - 1];
 
         return weapon;
+    }
+
+    public bool HasAllArtefacts()
+    {
+        return Artefacts.Count == 3;
     }
 }

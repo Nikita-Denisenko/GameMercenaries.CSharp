@@ -84,6 +84,12 @@ public static class UiHelpers
             return number;
         }
     }
+
+    public static void PressEnterToContinue()
+    {
+        Console.WriteLine("Нажмите Enter, чтобы продолжить...");
+        Console.ReadLine();
+    }
     
     public static void PrintPlayerEvents(Player player)
     {
@@ -173,8 +179,74 @@ public static class UiHelpers
         Console.WriteLine("Удачи!");
     }
 
-    public static void PrintGameRules()
+    public static void ShowGameRules()
     {
-        
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("=== ПРАВИЛА ИГРЫ ===");
+        Console.ResetColor();
+
+        PrintWithTitle("Цель игры", 
+        "Отыскать все 3 магических артефакта или остаться последним выжившим на острове.");
+
+        PrintWithTitle("Игровой процесс", 
+        "Каждому игроку выдается случайный персонаж и локация. Игра идет по дням (раундам). " +
+        "В день игрок может выполнить несколько действий: подобрать предмет, использовать аптечку, атаковать, выбросить предмет. " +
+        "Каждое действие (кроме выброса) тратит 1 очко действий. В конце хода игрок попадает в случайную новую локацию и восстанавливает очки действий.");
+
+        PrintWithTitle("Юниты", GetUnitsList());
+        PrintWithTitle("Локации", GetLocationsList());
+        PrintWithTitle("Предметы", GetItemsList());
+    }
+    
+    private static void PrintWithTitle(string title, string content)
+    {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine($"\n-- {title} --");
+        Console.ResetColor();
+        Console.WriteLine(content);
+    }
+
+    private static string GetUnitsList() => 
+        "1. Солдат — без доп. свойств\n" +
+        "2. Бретер — увеличен рукопашный урон на 10\n" +
+        "3. Человек-черепаха — панцирь снижает точность на 1 и урон на 10\n" +
+        "4. Ганфайтер — +1 к точности при стрельбе\n" +
+        "5. Человек-ящер — регенерация 10 HP за ход\n" +
+        "6. Человек-хамелеон — может красть предметы в локации\n" +
+        "7. Скороход — 3 очка действий\n" +
+        "8. Человек-краб — не может использовать оружие, но имеет 180 HP";
+
+    private static string GetLocationsList() =>
+        "1. Разгромленный супермаркет\n" +
+        "2. Госпиталь\n" +
+        "3. Место крушения поезда\n" +
+        "4. Химический завод\n" +
+        "5. Загрязнённое побережье\n" +
+        "6. Пустошь\n" +
+        "7. Орлиный утёс";
+
+    private static string GetItemsList() =>
+        "Артефакты:\n" +
+        "- Лиловый перстень равновесия\n" +
+        "- Бронзовая подвеска мудрости\n" +
+        "- Алый браслет власти\n\n" +
+        "Оружие:\n" +
+        "- Нож, P350 (можно 2), MP7, AK-47, РПГ-32, AWM\n\n" +
+        "Бонусы:\n" +
+        "- Лазерный прицел (+1 к точности)\n" +
+        "- Бронежилет (-10 урона от врага)\n" +
+        "- Маскировочный плащ (-1 к точности врага)\n\n" +
+        "Аптечка:\n" +
+        "- Восстанавливает 20 HP";
+
+    public static int PrintStartMenu()
+    {
+        const int actionsQuantity = 2;
+
+        Console.WriteLine("1. Создать игру");
+        Console.WriteLine("2. Ознакомиться с правилами");
+
+        return actionsQuantity;
     }
 }

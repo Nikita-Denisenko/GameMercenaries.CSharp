@@ -1,6 +1,5 @@
 using GameMercenaries.Constants;
 using GameMercenaries.Models;
-using GameMercenaries.Models.Items;
 using static GameMercenaries.GameLogic.EntityLogic.UnitLogic.LizardManSkills;
 using static GameMercenaries.UserInterface.MenuUi;
 using static GameMercenaries.UserInterface.UiHelpers;
@@ -13,21 +12,28 @@ public class CurrentGame(
     List<Player> players)
 {
     private List<Location> Locations { get; } = GameData.Locations;
-    public List<Unit> Units { get; } = GameData.Units;
-    public List<Item> Items { get; } =  GameData.Items;
-    public int DayNumber { get; private set; }
+    private int DayNumber { get; set; } = 1;
     public List<Player> AllPlayers { get; } = players;
     public List<Player> AlivePlayers { get; } = players;
     
-    public List<GameEvent> History { get; } = [];
+    private List<GameEvent> History { get; } = [];
 
-    public void KillPlayer(Player player) => AlivePlayers.Remove(player);
+    public bool IsGameOver { get; private set; }
+    public Player? Winner { get; private set; } 
 
-    public void AddEvent(GameEvent gameGameEvent) => History.Add(gameGameEvent);
+    private void KillPlayer(Player player) => AlivePlayers.Remove(player);
+
+    private void AddEvent(GameEvent gameGameEvent) => History.Add(gameGameEvent);
 
     public void FinishDay()
     {
         LizardManLogic(AlivePlayers);
+        
+        foreach (var player in AlivePlayers)
+        {
+            player.Unit.RestoreAllActions();
+        }
+        
         DayNumber++;
     }
     
@@ -54,6 +60,7 @@ public class CurrentGame(
             if (availablePlayers.Count == 0)
             {
                 Console.WriteLine("На этой локации нет игроков, выберите другую");
+                PressEnterToContinue();
                 continue;
             }
             
@@ -109,7 +116,10 @@ public class CurrentGame(
                         gameEvent => History.Add(gameEvent)
                         );
                     
+                    if (handFightResult.DefenderDied) KillPlayer(defender);
+                    
                     PrintHandFightResult(handFightResult);
+                    PressEnterToContinue();
                    
                     break;
                
@@ -125,9 +135,18 @@ public class CurrentGame(
                         DayNumber,
                         gameEvent => History.Add(gameEvent));
                     
+                    if (gunFightResult.DefenderDied) KillPlayer(defender);
+                    
                     PrintGunFightResult(gunFightResult);
+                    PressEnterToContinue();
                     
                     break;
+            }
+
+            if (AlivePlayers.Count == 1)
+            {
+                IsGameOver = true;
+                Winner = attacker;
             }
         }
     }
@@ -137,10 +156,21 @@ public class CurrentGame(
        var quantityActions = MapMenu(player);
        var numberOfAction = GetNumberOfAction(quantityActions, "Введите номер действия:");
 
-       if (numberOfAction != quantityActions)
+       if (numberOfAction == quantityActions)
        {
-           FightMenuLogic(player);
+           return true;
        }
+       
+       const int actionCost = 1;
+        
+       if (player.Unit.CurrentActions < actionCost)
+       {
+           Console.WriteLine("У вас недостаточно действий. Дождитесь следующего хода.");
+           PressEnterToContinue();
+           return true;
+       }
+       
+       FightMenuLogic(player); 
        
        return true;
     }
@@ -163,19 +193,37 @@ public class CurrentGame(
         {
             case "Назад":
                 break;
+            
             case "Выбросить предмет":
                 player.RemoveItem();
+                PressEnterToContinue();
                 break;
+           
             case "Использовать аптечку":
+                const int actionCost = 1;
+                
+                if (player.Unit.CurrentActions < actionCost)
+                {
+                    Console.WriteLine("У вас недостаточно действий. Дождитесь следующего хода");
+                    PressEnterToContinue();
+                    return true;
+                }
+                
+                player.Unit.UseActions(actionCost);
                 player.UseMedKit();
+                PressEnterToContinue();
+                
                 var unit = player.Unit;
+                
                 var newGameEvent = new GameEvent
                 {
                     Day = DayNumber,
                     Type = EventType.Heal,
                     Message = $"Игрок {player.UserName} использовал аптечку! Его здоровье {unit.CurrentHealth} из {unit.MaxHealth}"
                 };
+                
                 AddEvent(newGameEvent);
+                
                 break;
         }
 
@@ -190,9 +238,20 @@ public class CurrentGame(
 
         if (actionsQuantity == numberOfAction) return true;
 
+        const int actionCost = 1;
+
+        if (player.Unit.CurrentActions < actionCost)
+        {
+            Console.WriteLine("У вас недостаточно действий. Дождитесь следующего хода.");
+            PressEnterToContinue();
+            return true;
+        }
+        
         var item = player.ItemOnLocation;
         
+        player.Unit.UseActions(actionCost);
         player.FindItem();
+        PressEnterToContinue();
 
         GameEvent newGameEvent;
         
@@ -206,6 +265,12 @@ public class CurrentGame(
             };
             
             AddEvent(newGameEvent);
+
+            if (player.HasAllArtefacts())
+            {
+                IsGameOver = true;
+                Winner = player;
+            }
         
             return true;
         }
@@ -229,8 +294,20 @@ public class CurrentGame(
         var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия: ");
         
         if (actionsQuantity == numberOfAction) return true;
+
+        const int actionCost = 1;
         
+        if (player.Unit.CurrentActions < actionCost)
+        {
+            Console.WriteLine("У вас недостаточно действий. Дождитесь следующего хода");
+            PressEnterToContinue();
+            return true;
+        }
+                
+        player.Unit.UseActions(actionCost);
         player.UseMedKit();
+        PressEnterToContinue();
+        
         var unit = player.Unit;
         
         var newGameEvent = new GameEvent
@@ -294,11 +371,15 @@ public class CurrentGame(
                 [++index] = () => FinishDayForPlayer(player)
             };
             
+            Console.Clear();
+            Console.WriteLine($"Ходит игрок {player.UserName}");
+            Console.WriteLine($"День {DayNumber}");
+            Console.WriteLine($"Количество ваших действий: {player.Unit.CurrentActions}");
             PrintMoveActionsMenu();
 
             if ((UnitIdType)player.Unit.Id == UnitIdType.ChameleonMan)
             {
-                Console.WriteLine($"{++index}. Украсть предмет у игрока");
+                Console.WriteLine($"{++index}. Украсть предмет у игрока (1 действие)");
                 menuOptions[index] = () => ChameleonManLogic(
                     player, 
                     AlivePlayers, 

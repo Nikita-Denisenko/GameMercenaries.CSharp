@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace GameMercenaries.Models;
 
@@ -28,15 +29,15 @@ public class Unit
     [JsonIgnore]
     public int CurrentHealth { get; private set; }
 
-    [JsonIgnore]
-    public int CurrentActions { get; private set; }
+    [JsonIgnore] public int CurrentActions { get; private set; }
 
-    [JsonConstructor]
-    public Unit()
+    [OnDeserialized]
+    internal void OnDeserializedMethod(StreamingContext context)
     {
         CurrentHealth = MaxHealth;
         CurrentActions = MaxActions;
     }
+
 
     public bool IsAlive() => CurrentHealth > 0;
 

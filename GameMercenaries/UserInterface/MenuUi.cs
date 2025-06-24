@@ -74,7 +74,7 @@ public static class MenuUi
         
         PrintLocationGroup("Недоступные", unavailableLocations, currentPlayer);
         
-        Console.WriteLine("1. Атаковать игрока");
+        Console.WriteLine("1. Атаковать игрока (1 действие)");
         Console.WriteLine("2. Назад");
 
         return actionsQuantity;
@@ -102,7 +102,7 @@ public static class MenuUi
         var hasMedkit = inventory.Any(item => (ItemIdType)item.Id == ItemIdType.Medkit);
         if (hasMedkit)
         {
-            options[optionNumber++] = "Использовать аптечку";
+            options[optionNumber++] = "Использовать аптечку (1 действие)";
         }
 
         options[optionNumber] = "Назад";
@@ -127,7 +127,7 @@ public static class MenuUi
         var itemName = player.ItemOnLocation.Name;
         
         Console.WriteLine($"В локации есть предмет {itemName}!");
-        Console.WriteLine($"1. Взять предмет {itemName}");
+        Console.WriteLine($"1. Взять предмет {itemName} (1 действие)");
         Console.WriteLine("2. Назад");
         
         return actionsQuantity + 1;
@@ -140,7 +140,7 @@ public static class MenuUi
         player.Unit.PrintInfo();
         Console.WriteLine();
         
-        Console.WriteLine("1. Восстановить здоровье");
+        Console.WriteLine("1. Восстановить здоровье (1 действие)");
         Console.WriteLine("2. Назад");
 
         return actionsQuantity;
@@ -173,6 +173,19 @@ public static class MenuUi
 
         return  actionsQuantity;
     }
-    
-    
+
+    public static int PrintCreateGameMenu()
+    {
+        const int actionsQuantity = 6;
+        
+        Console.WriteLine("Выберите количество игроков:");
+        Console.WriteLine("1. Назад");
+        Console.WriteLine("2. Два игрока");
+        Console.WriteLine("3. Три игрока");
+        Console.WriteLine("4. Четыре игрока");
+        Console.WriteLine("5. Пять игроков");
+        Console.WriteLine("6. Шесть игроков");
+
+        return actionsQuantity;
+    }
 }
