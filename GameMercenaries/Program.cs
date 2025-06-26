@@ -1,6 +1,7 @@
 ﻿using GameMercenaries.gameManagement;
 using static GameMercenaries.gameManagement.GameInitializer;
 using static GameMercenaries.UserInterface.UiHelpers;
+using static GameMercenaries.UserInterface.MenuUi;
     
 Main();
 
@@ -15,6 +16,8 @@ void Main()
         var actionsQuantity = PrintStartMenu();
 
         var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия:");
+        
+        Console.Clear();
 
         if (numberOfAction == actionsQuantity)
         {

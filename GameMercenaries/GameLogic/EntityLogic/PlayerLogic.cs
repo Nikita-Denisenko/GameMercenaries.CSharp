@@ -3,6 +3,7 @@ using GameMercenaries.Models;
 namespace GameMercenaries.GameLogic.EntityLogic;
 
 using gameManagement;
+using static LocationsLogic;
 
 public static class PlayerLogic
 {
@@ -16,7 +17,9 @@ public static class PlayerLogic
         
         for (var i = 0; i < names.Count; i++)
         {
-            var player = new Player(names[i], shuffledUnits[i]);
+            var location = GenerateStartLocation();
+            var player = new Player(names[i], shuffledUnits[i], location);
+            location.AddPlayer(player);
             players.Add(player);
         }
 

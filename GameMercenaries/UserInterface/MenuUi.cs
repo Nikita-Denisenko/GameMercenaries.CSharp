@@ -188,4 +188,14 @@ public static class MenuUi
 
         return actionsQuantity;
     }
+    
+    public static int PrintStartMenu()
+    {
+        const int actionsQuantity = 2;
+
+        Console.WriteLine("1. Создать игру");
+        Console.WriteLine("2. Ознакомиться с правилами");
+
+        return actionsQuantity;
+    }
 }

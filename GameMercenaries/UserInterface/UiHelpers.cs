@@ -101,8 +101,6 @@ public static class UiHelpers
         {
             Console.WriteLine(currentEvent.Message);
         }
-        
-        Console.WriteLine();
     }
 
     public static void PrintGameEvents(List<GameEvent> events, bool isCurrentDay)
@@ -239,14 +237,4 @@ public static class UiHelpers
         "- Маскировочный плащ (-1 к точности врага)\n\n" +
         "Аптечка:\n" +
         "- Восстанавливает 20 HP";
-
-    public static int PrintStartMenu()
-    {
-        const int actionsQuantity = 2;
-
-        Console.WriteLine("1. Создать игру");
-        Console.WriteLine("2. Ознакомиться с правилами");
-
-        return actionsQuantity;
-    }
 }

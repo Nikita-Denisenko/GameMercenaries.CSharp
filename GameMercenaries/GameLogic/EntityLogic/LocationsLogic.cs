@@ -1,7 +1,7 @@
 using GameMercenaries.gameManagement;
 using GameMercenaries.Models;
 
-namespace GameMercenaries.GameLogic;
+namespace GameMercenaries.GameLogic.EntityLogic;
 
 public static class LocationsLogic
 {

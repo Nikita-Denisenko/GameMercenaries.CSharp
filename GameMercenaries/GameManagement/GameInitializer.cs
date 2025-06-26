@@ -16,12 +16,15 @@ public static class GameInitializer
         if (playersQuantity == 1) return null;
 
         List<string> playerNames = [];
+        
+        Console.Clear();
 
         for (var i = 1; i <= playersQuantity; i++)
         {
-            Console.WriteLine("Чтобы вернуться назад введите любую цифру");
             while (true)
             {
+                Console.Clear();
+                Console.WriteLine("Чтобы вернуться назад введите любую цифру");
                 Console.WriteLine($"Введите имя игрока {i}:");
                 var name = Console.ReadLine();
                 
@@ -38,6 +41,8 @@ public static class GameInitializer
                 break;
             }
         }
+        
+        Console.Clear();
 
         var players = CreatePlayers(playerNames);
         

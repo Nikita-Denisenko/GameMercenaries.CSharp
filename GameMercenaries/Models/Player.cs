@@ -3,19 +3,20 @@ using GameMercenaries.Models.Items;
 
 namespace GameMercenaries.Models;
 
-using static GameLogic.LocationsLogic;
+using static GameLogic.EntityLogic.LocationsLogic;
 using static GameLogic.ItemLogic;
 using static UserInterface.UiHelpers;
 
 
 public class Player(
     string userName,
-    Unit unit
+    Unit unit,
+    Location startLocation
     )
 {
     public string UserName { get; } = userName;
     public Unit Unit { get; } = unit;
-    public Location Location { get; private set; } = GenerateStartLocation();
+    public Location Location { get; private set; } = startLocation;
     public Item ItemOnLocation { get; private set; } = GenerateStartItem();
     public bool ItemWasTaken { get; private set; }
     public List<Item> Inventory { get; } = [];
@@ -25,7 +26,9 @@ public class Player(
     
     public void ChangeLocation()
     {
+        Location.RemovePlayer(this);
         Location = GenerateNewLocation(Location);
+        Location.AddPlayer(this);
         ItemOnLocation = GenerateItem(Location);
         ItemWasTaken = false;
     }

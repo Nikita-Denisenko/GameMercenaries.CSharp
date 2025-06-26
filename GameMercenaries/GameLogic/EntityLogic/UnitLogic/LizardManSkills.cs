@@ -10,6 +10,6 @@ public static class LizardManSkills
         var lizardPlayer = players
             .FirstOrDefault(player => (UnitIdType)player.Unit.Id == UnitIdType.LizardMan);
 
-        lizardPlayer?.Unit.RestoreHealth((int)lizardPlayer.Unit.Rules["restore_hp_bonus"]);
+        lizardPlayer?.Unit.RestoreHealth(Convert.ToInt32(lizardPlayer.Unit.Rules["restore_hp_bonus"]));
     }
 }

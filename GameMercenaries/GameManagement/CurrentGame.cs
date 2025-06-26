@@ -36,22 +36,27 @@ public class CurrentGame(
         
         DayNumber++;
     }
+
+    private Location? ChooseLocationToAttackPlayer()
+    {
+        var locationsQuantity = ChooseLocationMenu(Locations);
+        var actionsQuantity = locationsQuantity + 1;
+            
+        Console.WriteLine($"{actionsQuantity}. Назад");
+            
+        var locationNumber = GetNumberOfAction(actionsQuantity, "Введите номер локации:");
+        
+        if (locationNumber == actionsQuantity) return null;
+        
+        var defenderLocation = Locations[locationNumber - 1];
+
+        return defenderLocation;
+    }
     
-    private Player? ChoosePlayerToAttack(Player attacker)
+    private Player? ChoosePlayerToAttack(Player attacker, Location defenderLocation)
     {
         while (true)
         {
-            var locationsQuantity = ChooseLocationMenu(Locations);
-            var actionsQuantity = locationsQuantity + 1;
-            
-            Console.WriteLine($"{actionsQuantity}. Назад");
-            
-            var locationNumber = GetNumberOfAction(Locations.Count, "Введите номер локации:");
-        
-            if (locationNumber == actionsQuantity) return null;
-        
-            var defenderLocation = Locations[locationNumber - 1];
-            
             var availablePlayers = defenderLocation.CurrentPlayers
                 .Where(player => player != attacker).ToList();
 
@@ -61,12 +66,12 @@ public class CurrentGame(
             {
                 Console.WriteLine("На этой локации нет игроков, выберите другую");
                 PressEnterToContinue();
-                continue;
+                return null;
             }
             
             ChoosePlayerMenu(availablePlayers);
             
-            actionsQuantity = quantityPlayers + 1;
+            var actionsQuantity = quantityPlayers + 1;
             
             Console.WriteLine($"{actionsQuantity}. Назад");
             
@@ -94,27 +99,44 @@ public class CurrentGame(
         return fightNumber;
     }
 
-    private void FightMenuLogic(Player attacker)
+    private bool FightMenuLogic(Player attacker)
     {
+        const int actionCost = 1;
+        
         while (true)
         {
-            var defender = ChoosePlayerToAttack(attacker);
+            Console.Clear();
 
-            if (defender is null) return;
+            var defenderLocation = ChooseLocationToAttackPlayer();
+
+            if (defenderLocation is null) return false;
+            
+            Console.Clear();
+            
+            var defender = ChoosePlayerToAttack(attacker, defenderLocation);
+
+            if (defender is null) continue;
+            
+            Console.Clear();
 
             var fightNumber = ChooseFightType();
 
             if (fightNumber is null) continue;
+            
+            Console.Clear();
 
             switch (fightNumber)
             {
                 case 1:
+                    
                     var handFightResult = HandFight(
                         attacker, 
                         defender, 
                         DayNumber,
                         gameEvent => History.Add(gameEvent)
                         );
+                    
+                    if (handFightResult.PlayersCanFight) attacker.Unit.UseActions(actionCost);
                     
                     if (handFightResult.DefenderDied) KillPlayer(defender);
                     
@@ -135,6 +157,8 @@ public class CurrentGame(
                         DayNumber,
                         gameEvent => History.Add(gameEvent));
                     
+                    if (gunFightResult.PlayersCanFight) attacker.Unit.UseActions(actionCost);
+                    
                     if (gunFightResult.DefenderDied) KillPlayer(defender);
                     
                     PrintGunFightResult(gunFightResult);
@@ -148,31 +172,39 @@ public class CurrentGame(
                 IsGameOver = true;
                 Winner = attacker;
             }
+            
+            return true;
         }
     }
     
     private bool MapMenuLogic(Player player)
     {
-       var quantityActions = MapMenu(player);
-       var numberOfAction = GetNumberOfAction(quantityActions, "Введите номер действия:");
+        while (true)
+        {
+            Console.Clear();
+            var quantityActions = MapMenu(player);
+            var numberOfAction = GetNumberOfAction(quantityActions, "Введите номер действия:");
 
-       if (numberOfAction == quantityActions)
-       {
-           return true;
-       }
+            if (numberOfAction == quantityActions)
+            {
+                return true;
+            }
        
-       const int actionCost = 1;
+            const int actionCost = 1;
+       
+            Console.Clear();
         
-       if (player.Unit.CurrentActions < actionCost)
-       {
-           Console.WriteLine("У вас недостаточно действий. Дождитесь следующего хода.");
-           PressEnterToContinue();
-           return true;
-       }
+            if (player.Unit.CurrentActions < actionCost)
+            {
+                Console.WriteLine("У вас недостаточно действий. Дождитесь следующего хода.");
+                PressEnterToContinue();
+                continue;
+            }
        
-       FightMenuLogic(player); 
+            if (!FightMenuLogic(player)) continue; 
        
-       return true;
+            return true;
+        }
     }
     
     private bool InventoryMenuLogic(Player player)
@@ -188,6 +220,8 @@ public class CurrentGame(
         var numberOfAction = GetNumberOfAction(options.Count, "Введите номер действия: ");
 
         var action = options[numberOfAction];
+        
+        Console.Clear();
 
         switch (action)
         {
@@ -239,6 +273,8 @@ public class CurrentGame(
         if (actionsQuantity == numberOfAction) return true;
 
         const int actionCost = 1;
+        
+        Console.Clear();
 
         if (player.Unit.CurrentActions < actionCost)
         {
@@ -355,7 +391,7 @@ public class CurrentGame(
 
     public void MainMenuLogic(Player player)
     {
-        PrintPlayerEvents(player);
+        var firstThisDayEntry = true;
         
         while (true)
         {
@@ -370,14 +406,23 @@ public class CurrentGame(
                 [++index] = EventsMenuLogic,
                 [++index] = () => FinishDayForPlayer(player)
             };
+
+            var playerUnit = player.Unit;
             
             Console.Clear();
             Console.WriteLine($"Ходит игрок {player.UserName}");
             Console.WriteLine($"День {DayNumber}");
-            Console.WriteLine($"Количество ваших действий: {player.Unit.CurrentActions}");
+            if (firstThisDayEntry)
+            {
+                PrintPlayerEvents(player);
+            } 
+            Console.WriteLine($"Ваш юнит: {playerUnit.Name}");
+            Console.WriteLine($"Жизни {playerUnit.CurrentHealth} из {playerUnit.MaxHealth}");
+            Console.WriteLine($"Количество действий: {playerUnit.CurrentActions} из {playerUnit.MaxActions}");
+            Console.WriteLine($"Загруженность инвентаря: {player.InventoryWeight} из {playerUnit.Weight} кг");
             PrintMoveActionsMenu();
 
-            if ((UnitIdType)player.Unit.Id == UnitIdType.ChameleonMan)
+            if ((UnitIdType)playerUnit.Id == UnitIdType.ChameleonMan)
             {
                 Console.WriteLine($"{++index}. Украсть предмет у игрока (1 действие)");
                 menuOptions[index] = () => ChameleonManLogic(
@@ -392,6 +437,10 @@ public class CurrentGame(
 
             var numberOfAction = GetNumberOfAction(actionsQuantity, "Введите номер действия:");
 
+            firstThisDayEntry = false;
+
+            Console.Clear();
+            
             if (!menuOptions[numberOfAction]()) return;
         }
     }

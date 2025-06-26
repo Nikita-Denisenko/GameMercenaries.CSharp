@@ -20,6 +20,7 @@ public static class FightService
         {
             return new HandFightResult
             {
+                PlayersCanFight = false,
                 WasSuccessful = false,
                 DamageDealt = 0,
                 DefenderDied = false,
@@ -36,6 +37,7 @@ public static class FightService
         {
             return new HandFightResult
             {
+                PlayersCanFight = true,
                 WasSuccessful = false,
                 DamageDealt = 0,
                 DefenderDied = false,
@@ -73,6 +75,7 @@ public static class FightService
             
             return new HandFightResult
             {
+                PlayersCanFight = true,
                 WasSuccessful = true,
                 DamageDealt = damage,
                 DefenderDied = true,
@@ -101,6 +104,7 @@ public static class FightService
         
         return new HandFightResult
         {
+            PlayersCanFight = true,
             WasSuccessful = true,
             DamageDealt = damage,
             DefenderDied = false,
@@ -124,6 +128,7 @@ public static class FightService
         {
             return new GunFightResult
             {
+                PlayersCanFight = false,
                 WasSuccessful = false,
                 DamageDealt = 0,
                 DefenderDied = false,
@@ -178,6 +183,7 @@ public static class FightService
         {
             return new GunFightResult
             {
+                PlayersCanFight = true,
                 WasSuccessful = false,
                 DamageDealt = 0,
                 DefenderDied = false,
@@ -232,6 +238,7 @@ public static class FightService
             
             return new GunFightResult
             {
+                PlayersCanFight = true,
                 WasSuccessful = true,
                 DamageDealt = damage,
                 DefenderDied = true,
@@ -270,6 +277,7 @@ public static class FightService
         
         return new GunFightResult
         {
+            PlayersCanFight = true,
             WasSuccessful = true,
             DamageDealt = damage,
             DefenderDied = false,

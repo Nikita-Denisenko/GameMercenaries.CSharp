@@ -2,6 +2,7 @@ namespace GameMercenaries.GameLogic.FightLogic;
 
 public abstract class FightResult
 {
+    public bool PlayersCanFight { get; init; }
     public bool WasSuccessful { get; init; }
     public int DamageDealt { get; init; }
     public bool DefenderDied { get; init; }
