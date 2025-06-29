@@ -233,7 +233,7 @@ public class CurrentGame(
                 PressEnterToContinue();
                 break;
            
-            case "Использовать аптечку":
+            case "Использовать аптечку (1 действие)":
                 const int actionCost = 1;
                 
                 if (player.Unit.CurrentActions < actionCost)
@@ -416,6 +416,7 @@ public class CurrentGame(
             {
                 PrintPlayerEvents(player);
             } 
+            player.ClearHistory();
             Console.WriteLine($"Ваш юнит: {playerUnit.Name}");
             Console.WriteLine($"Жизни {playerUnit.CurrentHealth} из {playerUnit.MaxHealth}");
             Console.WriteLine($"Количество действий: {playerUnit.CurrentActions} из {playerUnit.MaxActions}");
@@ -440,8 +441,11 @@ public class CurrentGame(
             firstThisDayEntry = false;
 
             Console.Clear();
-            
-            if (!menuOptions[numberOfAction]()) return;
+
+            if (!menuOptions[numberOfAction]())
+            {
+                return;
+            }
         }
     }
 }

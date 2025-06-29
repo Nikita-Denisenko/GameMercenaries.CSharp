@@ -37,7 +37,9 @@ void Main()
         var gameLoop = new GameLoop(game);
     
         gameLoop.Run();
-
+        
         break;
     }
+    
+    PressEnterToContinue();
 }

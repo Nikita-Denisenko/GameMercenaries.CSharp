@@ -123,7 +123,28 @@ public static class FightService
         )
     {
         var distance = CalculateDistance(attacker.Location, defender.Location);
-        
+
+        if ((UnitIdType)attacker.Unit.Id == UnitIdType.CrabMan)
+        {
+            return new GunFightResult
+            {
+                PlayersCanFight = false,
+                WasSuccessful = false,
+                DamageDealt = 0,
+                DefenderDied = false,
+                DefenderCurrentHealth = defender.Unit.CurrentHealth,
+                DefenderMaxHealth = defender.Unit.MaxHealth,
+                Message = $"Вы не можете использовать оружие, у вас клешни!",
+                HitByRpgPlayers = [],
+                MessagesForHitPlayers = [],
+                AttackerGotInjuredAtFactory = false,
+                DamageOfInjury = 0,
+                AttackerDiedByInjury = false,
+                SideEffectMessage = null,
+                EquipmentBreakMessages = []
+            };
+        }
+
         if (!PlayersCanGunFight(weapon, distance))
         {
             return new GunFightResult

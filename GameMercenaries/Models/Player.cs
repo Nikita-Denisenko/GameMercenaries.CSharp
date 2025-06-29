@@ -35,6 +35,8 @@ public class Player(
 
     public void AddEvent(GameEvent playerGameEvent) => History.Add(playerGameEvent);
     
+    public void ClearHistory() => History.Clear();
+    
     public bool CanTakeItem(Item item) => Unit.Weight >= InventoryWeight + item.Weight;
     
     public void TakeItem(Item item)
@@ -87,6 +89,7 @@ public class Player(
         }
 
         var hpBonus = medKit.HpBonus;
+        Inventory.Remove(medKit);
         
         Unit.RestoreHealth(hpBonus);
 

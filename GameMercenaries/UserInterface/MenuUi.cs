@@ -83,29 +83,29 @@ public static class MenuUi
     public static Dictionary<int, string> GetInventoryMenuOptions(List<Item> inventory)
     {
         var options = new Dictionary<int, string>();
-        var optionNumber = 1;
+        var optionNumber = 0;
 
         if (inventory.Count == 0)
         {
             Console.WriteLine("В вашем инвентаре нет предметов.");
             Console.WriteLine();
-            options[optionNumber] = "Назад";
+            options[++optionNumber] = "Назад";
             return options;
         }
+        
+        options[++optionNumber] = "Назад";
 
         Console.WriteLine("Ваши предметы:");
         PrintItems(inventory);
         Console.WriteLine();
 
-        options[optionNumber++] = "Выбросить предмет";
+        options[++optionNumber] = "Выбросить предмет";
 
         var hasMedkit = inventory.Any(item => (ItemIdType)item.Id == ItemIdType.Medkit);
         if (hasMedkit)
         {
-            options[optionNumber++] = "Использовать аптечку (1 действие)";
+            options[++optionNumber] = "Использовать аптечку (1 действие)";
         }
-
-        options[optionNumber] = "Назад";
 
         return options;
     }
