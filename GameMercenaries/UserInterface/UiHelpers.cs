@@ -67,17 +67,15 @@ public static class UiHelpers
                 
             var input = Console.ReadLine();
             
-            if (String.IsNullOrEmpty(input) || !int.TryParse(input, out var number))
+            if (String.IsNullOrWhiteSpace(input) || !int.TryParse(input, out var number))
             {
                 Console.WriteLine("Некорректный ввод! попробуйте ещё раз.");
-                Console.WriteLine("Введите номер:");
                 continue;
             }
 
             if (number < 1 || number > actionsQuantity)
             {
                 Console.WriteLine("Некорректный ввод! попробуйте ещё раз.");
-                Console.WriteLine("Введите номер:");
                 continue;
             }
 

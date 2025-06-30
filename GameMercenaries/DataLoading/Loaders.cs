@@ -9,19 +9,19 @@ public static class Loaders
 {
     public static List<Location> LoadLocations()
     {
-        var json = File.ReadAllText("D:\\С# Projects\\GameMercenaries\\GameMercenaries\\Data\\locations.json");
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "locations.json"));
         return JsonConvert.DeserializeObject<List<Location>>(json) ?? new List<Location>();
     }
 
     public static List<Unit> LoadUnits()
     {
-        var json = File.ReadAllText("D:\\С# Projects\\GameMercenaries\\GameMercenaries\\Data\\units.json");
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "units.json"));
         return JsonConvert.DeserializeObject<List<Unit>>(json) ?? new List<Unit>();
     }
 
     public static List<Item> LoadItems()
     {
-        var json = File.ReadAllText("D:\\С# Projects\\GameMercenaries\\GameMercenaries\\Data\\items.json");
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "items.json"));
         var rawList = JsonConvert.DeserializeObject<List<JObject>>(json) ?? new List<JObject>();
         var items = new List<Item>();
 

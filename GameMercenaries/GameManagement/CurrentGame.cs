@@ -118,7 +118,7 @@ public class CurrentGame(
             if (defender is null) continue;
             
             Console.Clear();
-
+             
             var fightNumber = ChooseFightType();
 
             if (fightNumber is null) continue;
@@ -147,6 +147,7 @@ public class CurrentGame(
                
                 case 2:
                     var weapon = attacker.ChooseWeaponForAttack();
+                    Console.Clear();
                     
                     if (weapon is null) continue;
                    

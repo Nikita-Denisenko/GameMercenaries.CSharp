@@ -108,6 +108,7 @@ public class Player(
         if (weaponsQuantity == 0)
         {
             Console.WriteLine("У вас в инвентаре нет оружия!");
+            PressEnterToContinue();
             return null;
         }
         

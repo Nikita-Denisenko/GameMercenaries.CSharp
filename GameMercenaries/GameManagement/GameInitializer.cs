@@ -28,7 +28,9 @@ public static class GameInitializer
                 Console.WriteLine($"Введите имя игрока {i}:");
                 var name = Console.ReadLine();
                 
-                if (string.IsNullOrEmpty(name)) continue;
+                if (string.IsNullOrWhiteSpace(name)) continue;
+
+                name = name.Trim();
                 
                 if (int.TryParse(name, out _))
                 {
